@@ -4,6 +4,8 @@ Structural design toolkit for a twin-module, skid-mounted portable site
 shed (steel-tube frame, laminated cladding) sized for on-site cement
 storage during construction.
 
+**Live:** https://rahulbhargavain.github.io/shed-designer/
+
 ## Contents
 
 - [`index.html`](index.html) — interactive site planner
