@@ -1,0 +1,10 @@
+# Regenerable deploy artifacts (run `python package_deploy.py` to rebuild)
+public/shed-design/
+sattal_cottonspace_deploy/
+sattal_cottonspace_deploy.zip
+.firebase/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/

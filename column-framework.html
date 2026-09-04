@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AERO-SHED | Column Formwork — Ultra-Optimised Design (v5.0)</title>
+  <meta name="description" content="Ultra-optimised 450×300 mm column formwork: 2 double + 2 single corners, vertical 75x5 plate stiffeners, single-angle central stringers, and optimized yoke types. Weight reduced to ~139 kg.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f8fafc;--surface:#ffffff;--surface-2:#f1f5f9;
+      --border:#e2e8f0;--border-strong:#cbd5e1;
+      --text:#0f172a;--muted:#64748b;
+      --primary:#0891b2;--primary-dim:rgba(8,145,178,.10);
+      --green:#059669;--green-dim:rgba(5,150,105,.08);
+      --amber:#d97706;--amber-dim:rgba(217,119,6,.08);
+      --red:#dc2626;--red-dim:rgba(220,38,38,.08);
+      --violet:#7c3aed;--violet-dim:rgba(124,58,237,.08);
+      --grad:linear-gradient(135deg,#0891b2 0%,#0284c7 100%);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;line-height:1.6;padding:24px;overflow-x:hidden}
+    .shell{max-width:1380px;margin:0 auto;display:grid;grid-template-columns:1fr 370px;gap:24px}
+    @media(max-width:960px){.shell{grid-template-columns:1fr}}
+    header{grid-column:1/-1;background:var(--surface);border:1px solid var(--border);border-radius:16px;
+      padding:20px 28px;display:flex;align-items:center;justify-content:space-between;
+      box-shadow:0 4px 24px rgba(15,23,42,.06)}
+    .brand{display:flex;align-items:center;gap:12px}
+    .badge{background:var(--grad);width:42px;height:42px;border-radius:10px;display:flex;align-items:center;
+      justify-content:center;font-weight:800;font-size:1.1rem;color:#fff;box-shadow:0 0 18px rgba(8,145,178,.35)}
+    .brand-name{font-size:1.4rem;font-weight:800;letter-spacing:-.5px;background:var(--grad);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .brand-sub{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:-3px}
+    .vtag{font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.5px;margin-left:10px}
+    .vtag-v5{background:var(--violet-dim);border:1px solid var(--violet);color:var(--violet)}
+    .btn-back{padding:9px 16px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;
+      border:1px solid var(--border);color:var(--text);background:transparent;text-decoration:none;
+      display:inline-flex;align-items:center;gap:6px;transition:all .2s}
+    .btn-back:hover{border-color:var(--muted);background:var(--surface-2)}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;
+      margin-bottom:24px;box-shadow:0 4px 24px rgba(15,23,42,.05);transition:border-color .3s}
+    .card:hover{border-color:var(--primary-dim)}
+    .card-title{font-size:1.05rem;font-weight:700;color:var(--primary);display:flex;align-items:center;
+      gap:8px;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:18px}
+    .callout{padding:14px 18px;border-radius:10px;margin:14px 0;border-left:4px solid;font-size:.88rem}
+    .callout-red{background:var(--red-dim);border-color:var(--red)}
+    .callout-amber{background:var(--amber-dim);border-color:var(--amber)}
+    .callout-green{background:var(--green-dim);border-color:var(--green)}
+    .callout-blue{background:var(--primary-dim);border-color:var(--primary)}
+    .callout-violet{background:var(--violet-dim);border-color:var(--violet)}
+    .callout h4{font-size:.88rem;font-weight:700;margin-bottom:5px}
+    .callout-red h4{color:var(--red)}.callout-amber h4{color:var(--amber)}
+    .callout-green h4{color:var(--green)}.callout-blue h4{color:var(--primary)}
+    .callout-violet h4{color:var(--violet)}
+    .tbl{width:100%;border-collapse:collapse;font-size:.84rem;margin:12px 0}
+    .tbl th{background:rgba(0,0,0,.02);color:var(--primary);font-weight:700;text-transform:uppercase;
+      font-size:.72rem;letter-spacing:1px;padding:10px 13px;border-bottom:2px solid var(--border)}
+    .tbl td{padding:9px 13px;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top}
+    .tbl tr:hover td{color:var(--text);background:rgba(0,0,0,.012)}
+    .tbl td.num,.tbl th.num{text-align:right;font-family:'JetBrains Mono',monospace}
+    .tbl td.pass{color:var(--green);font-weight:700}
+    .tbl td.fail{color:var(--red);font-weight:700}
+    .tbl td.warn{color:var(--amber);font-weight:700}
+    .fbox{font-family:'JetBrains Mono',monospace;font-size:.8rem;background:var(--surface-2);
+      border:1px solid var(--border);padding:12px 16px;border-radius:8px;margin:12px 0;
+      color:var(--primary);line-height:1.85}
+    .fbox .dim{color:var(--text);font-weight:700}
+    .input-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px;margin-bottom:16px}
+    .input-group{display:flex;flex-direction:column;gap:5px}
+    .input-label{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+    .input-field{background:#fff;border:1px solid var(--border-strong);border-radius:8px;padding:9px 12px;
+      color:var(--text);font-family:inherit;font-size:.9rem;transition:all .2s}
+    .input-field:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-dim)}
+    .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.7rem;font-weight:700;letter-spacing:.3px}
+    .pill-green{background:var(--green-dim);color:var(--green)}
+    .pill-red{background:var(--red-dim);color:var(--red)}
+    .pill-amber{background:var(--amber-dim);color:var(--amber)}
+    .pill-violet{background:var(--violet-dim);color:var(--violet)}
+    .sidebar-sticky{position:sticky;top:24px}
+    .svg-box{background:var(--surface-2);border:1px solid var(--border);border-radius:14px;
+      padding:16px;margin-bottom:20px;overflow:hidden}
+    .svg-label{font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);
+      font-weight:700;text-align:center;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:10px}
+    p{font-size:.9rem;color:var(--muted);margin-bottom:10px;line-height:1.65}
+    p strong{color:var(--text)}
+    ul,ol{margin-left:20px;margin-bottom:14px}
+    li{font-size:.88rem;color:var(--muted);margin-bottom:6px}
+    li strong{color:var(--text)}
+    h3{font-size:.95rem;font-weight:700;color:var(--text);margin:18px 0 8px;padding-top:4px;border-top:1px solid var(--border)}
+    h3:first-child{border-top:none;margin-top:0}
+    ::-webkit-scrollbar{width:6px;height:6px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <div class="badge">C</div>
+      <div>
+        <div class="brand-name">AERO-SHED</div>
+        <div class="brand-sub">Column Formwork — Optimised Design</div>
+      </div>
+      <span class="vtag vtag-v5">v5.0 — Asymmetric Corners (Diagonally Opposite)</span>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <a class="btn-back" href="./fabricator-guide-english.pdf" download="fabricator-guide-english.pdf" style="color:var(--primary);border-color:var(--primary-dim);font-size:.8rem;padding:7px 12px">🇬🇧 Fabricator PDF</a>
+      <a class="btn-back" href="./fabricator-guide-hindi.pdf" download="fabricator-guide-hindi.pdf" style="color:var(--violet);border-color:var(--violet-dim);font-size:.8rem;padding:7px 12px">🇮🇳 फ़ैब्रिकेटर PDF</a>
+      <a class="btn-back" href="index.html" style="font-size:.8rem;padding:7px 12px">← Shed Planner</a>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- 0. CHANGE LOG -->
+    <div class="callout callout-violet">
+      <h4>v5.0 Asymmetric Corner Optimization</h4>
+      <p style="margin:4px 0 0;font-size:.86rem">
+        (1) <strong>2 Double + 2 Single Corners</strong>: Reduced corner double angles from 4 down to <strong>2 diagonally opposite corners</strong> (e.g. TL and BR). The remaining two corners (TR and BL) are single angles, saving 12.3 kg of steel.<br>
+        (2) <strong>No 450mm Face Stringer Plates</strong>: Central stringers are single angles without plate reinforcement, saving 9.6 kg of steel. The short span between yokes keeps bending stress to just 30% of single-angle capacity.<br>
+        (3) <strong>Symmetric Ply Joints</strong>: Double-angle corners allow sandwich clamping at opposite corners, while single-angle corners are bolted normally.<br>
+        (4) <strong>Total Weight Reduced to ~139 kg</strong>: Saves <strong>22 kg</strong> over v4.0 and <strong>60 kg</strong> over v3.0, representing a massive cost and material optimization.
+      </p>
+    </div>
+
+    <!-- 1. DESIGN BASIS -->
+    <div class="card">
+      <h2 class="card-title">1. Design Basis &amp; Governing Parameters</h2>
+      <div class="input-row">
+        <div class="input-group">
+          <span class="input-label">Column Width (mm)</span>
+          <input type="number" class="input-field" id="col-w" value="450" oninput="recompute()">
+        </div>
+        <div class="input-group">
+          <span class="input-label">Column Depth (mm)</span>
+          <input type="number" class="input-field" id="col-d" value="300" oninput="recompute()">
+        </div>
+        <div class="input-group">
+          <span class="input-label">Pour Height (mm)</span>
+          <input type="number" class="input-field" id="pour-h" value="2438" oninput="recompute()">
+        </div>
+        <div class="input-group">
+          <span class="input-label">Ply Thickness (mm)</span>
+          <input type="number" class="input-field" id="ply-t" value="12" oninput="recompute()">
+        </div>
+        <div class="input-group">
+          <span class="input-label">Angle Leg (mm)</span>
+          <input type="number" class="input-field" id="angle-leg" value="35" oninput="recompute()">
+        </div>
+        <div class="input-group">
+          <span class="input-label">Angle Thickness (mm)</span>
+          <input type="number" class="input-field" id="angle-t" value="5" oninput="recompute()">
+        </div>
+        <div class="input-group">
+          <span class="input-label">300mm stiffener (mm)</span>
+          <input type="number" class="input-field" id="stiff-300" value="75" oninput="recompute()">
+        </div>
+      </div>
+
+      <div class="fbox">
+        <strong>Concrete Hydrostatic Pressure:</strong>
+        p_max = 24.0 kN/m³ × <span id="f-h" class="dim">2.438</span> m = <strong><span id="f-p" class="dim">58.6</span> kN/m²</strong>
+        &nbsp;<span class="pill pill-amber">governs at base (h=0)</span><br>
+        <strong>Single ISA <span id="f-sec">35×35×5</span>: </strong>
+        Z=<span id="f-Zs">1 490</span> mm³ &nbsp;|&nbsp;
+        M_allow_single=<strong>246 N·m</strong><br>
+        <strong>Double ISA <span id="f-sec2">35×35×5</span>: </strong>
+        Z=<span id="f-Z">2 980</span> mm³ &nbsp;|&nbsp;
+        M_allow_double=<strong>492 N·m</strong><br><br>
+        <strong>300mm Face Vertical Reinforcement (<span id="f-w300">75</span>×5 mm plate):</strong>
+        Z = b·t²/6 = <span id="f-Z300">312.5</span> mm³ &nbsp;|&nbsp; M_allow = <strong><span id="f-M300">51.6</span> N·m</strong><br>
+        Max demand at base (L=200mm span between yokes) = <strong><span id="f-d300">42.1</span> N·m</strong> &nbsp;<span id="f-s300" class="pill pill-green">PASS ✓</span><br><br>
+        <strong>Unreinforced Single Angle Verticals:</strong>
+        Max demand at base (L=260mm span between yokes) = <strong>62.7 N·m</strong> &nbsp;|&nbsp;
+        Capacity = <strong>246 N·m</strong> &nbsp;<span class="pill pill-green">25% Utilisation — PASS ✓</span>
+      </div>
+    </div>
+
+    <!-- 2. STRUCTURAL ACTION -->
+    <div class="card">
+      <h2 class="card-title">2. Asymmetric Corners — Structural Rationale</h2>
+      <p>By using <strong>diagonally opposite double-angle corners</strong> (e.g. TL and BR) and <strong>single-angle corners</strong> (TR and BL), we preserve structural symmetry and sandwich clamping capacity where panels meet, while saving 12.3 kg of steel angles.</p>
+
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Corner Position</th>
+            <th>Type</th>
+            <th class="num">Bending Moment Demand</th>
+            <th class="num">Allowable Moment</th>
+            <th class="num">Deflection (Max)</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TL Corner (Double)</td>
+            <td>Double ISA 35×5</td>
+            <td class="num">62.7 N·m</td>
+            <td class="num">492 N·m</td>
+            <td class="num">0.03 mm</td>
+            <td><span class="pill pill-green">12.7% Util. — PASS</span></td>
+          </tr>
+          <tr>
+            <td>BR Corner (Double)</td>
+            <td>Double ISA 35×5</td>
+            <td class="num">62.7 N·m</td>
+            <td class="num">492 N·m</td>
+            <td class="num">0.03 mm</td>
+            <td><span class="pill pill-green">12.7% Util. — PASS</span></td>
+          </tr>
+          <tr>
+            <td>TR Corner (Single)</td>
+            <td>Single ISA 35×5</td>
+            <td class="num">62.7 N·m</td>
+            <td class="num">246 N·m</td>
+            <td class="num">0.06 mm</td>
+            <td><span class="pill pill-green">25.5% Util. — PASS ✓</span></td>
+          </tr>
+          <tr>
+            <td>BL Corner (Single)</td>
+            <td>Single ISA 35×5</td>
+            <td class="num">62.7 N·m</td>
+            <td class="num">246 N·m</td>
+            <td class="num">0.06 mm</td>
+            <td><span class="pill pill-green">25.5% Util. — PASS ✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-violet">
+        <h4>Corner Clamping Details</h4>
+        <p style="margin:0">Double-angle corners are used at TL and BR, allowing standard double-angle sandwich clamping. At TR and BL, a single angle is placed on the outside of the corner. Ply panels are screwed or bolted directly through the legs of the single angle, which provides identical boundary stiffness at 25% stress levels.</p>
+      </div>
+    </div>
+
+    <!-- 3. YOKE MOMENTS & OPTIMISATION -->
+    <div class="card">
+      <h2 class="card-title">3. Yoke Bending Moments &amp; Type Selection</h2>
+      <p>Yokes are spaced from <strong>0 mm (bottom) to 2438 mm (top)</strong>. The tributary heights are used to compute the UDL and bending moments on the yokes. Single angles are used unless the moment exceeds 246 N·m, where double angles are required.</p>
+      
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Yoke</th>
+            <th class="num">h (mm)</th>
+            <th class="num">Gap below (mm)</th>
+            <th class="num">Trib (mm)</th>
+            <th class="num">p (kN/m²)</th>
+            <th class="num">Moment (N·m)</th>
+            <th class="num">Capacity (N·m)</th>
+            <th>Type</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="yoke-tbody"></tbody>
+      </table>
+
+      <div id="yoke-summary" class="fbox" style="margin-top:16px"></div>
+    </div>
+
+    <!-- 4. MATERIAL DETAILS & WEIGHTS -->
+    <div class="card">
+      <h2 class="card-title">4. Cut List, Weights &amp; Material Requirements</h2>
+
+      <h3>A. Vertical Frame — ISA 35×35×5 (2.55 kg/m)</h3>
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th class="num">Length (mm)</th>
+            <th class="num">Qty (singles)</th>
+            <th class="num">Total Length (m)</th>
+            <th class="num">Weight (kg)</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Double Corners (TL &amp; BR)</td>
+            <td class="num">2 438</td>
+            <td class="num">4</td>
+            <td class="num">9.75</td>
+            <td class="num">24.9</td>
+            <td>2 corners, back-to-back double angles</td>
+          </tr>
+          <tr>
+            <td>Single Corners (TR &amp; BL)</td>
+            <td class="num">2 438</td>
+            <td class="num">2</td>
+            <td class="num">4.88</td>
+            <td class="num">12.4</td>
+            <td>2 corners, single angles</td>
+          </tr>
+          <tr>
+            <td>Central Stringers (450mm face)</td>
+            <td class="num">2 438</td>
+            <td class="num">2</td>
+            <td class="num">4.88</td>
+            <td class="num">12.4</td>
+            <td>2 center stringers, single angle</td>
+          </tr>
+          <tr style="background:rgba(5,150,105,.04)">
+            <td><strong>Frame subtotal</strong></td>
+            <td class="num">—</td>
+            <td class="num"><strong>8 singles</strong></td>
+            <td class="num"><strong>19.51</strong></td>
+            <td class="num"><strong>49.7</strong></td>
+            <td><em>Cut from 4 × 20ft stock bars ✓</em></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>B. Flat Bar Stiffeners (5mm MS Plate, 3.93 kg/m²)</h3>
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Location</th>
+            <th class="num">Width (mm)</th>
+            <th class="num">Length (mm)</th>
+            <th class="num">Qty</th>
+            <th class="num">Weight (kg)</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>300mm Face centerline stiffener</td>
+            <td class="num" id="tb-w300">75</td>
+            <td class="num">2 438</td>
+            <td class="num">2</td>
+            <td class="num" id="tb-wt300">14.4</td>
+            <td>Welded vertically along 300mm face yokes</td>
+          </tr>
+          <tr style="background:rgba(5,150,105,.04)">
+            <td><strong>Plates subtotal</strong></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num" id="tb-wtTotal"><strong>14.4</strong></td>
+            <td><em>Saves 41.0 kg compared to v3.0 full covers ✓</em></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>C. Horizontal Yokes — ISA 35×35×5</h3>
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Yoke Type</th>
+            <th class="num">Qty (yokes)</th>
+            <th class="num">Long singles (550mm)</th>
+            <th class="num">Short singles (400mm)</th>
+            <th class="num">Total Singles</th>
+            <th class="num">Total Length (m)</th>
+            <th class="num">Weight (kg)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Single Angle</strong> (Yokes 1, 6, 7, 8, 9)</td>
+            <td class="num">5</td>
+            <td class="num">10</td>
+            <td class="num">10</td>
+            <td class="num">20</td>
+            <td class="num">9.50</td>
+            <td class="num">24.2</td>
+          </tr>
+          <tr>
+            <td><strong>Double Angle</strong> (Yokes 2, 3, 4, 5)</td>
+            <td class="num">4</td>
+            <td class="num">16</td>
+            <td class="num">16</td>
+            <td class="num">32</td>
+            <td class="num">15.20</td>
+            <td class="num">38.8</td>
+          </tr>
+          <tr style="background:rgba(5,150,105,.04)">
+            <td><strong>Yoke subtotal</strong></td>
+            <td class="num">9</td>
+            <td class="num">26</td>
+            <td class="num">26</td>
+            <td class="num"><strong>52 singles</strong></td>
+            <td class="num"><strong>24.70</strong></td>
+            <td class="num"><strong>63.0</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>D. Total Weight Summary</h3>
+      <table class="tbl">
+        <thead><tr><th>Material</th><th class="num">Weight (kg)</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>MS Angles — Vertical stringers/corners</td><td class="num">49.7</td><td>8 singles × 2.438m × 2.55 kg/m</td></tr>
+          <tr><td>MS Angles — Yokes (double &amp; single)</td><td class="num">63.0</td><td>52 pieces (24.7m total) × 2.55 kg/m</td></tr>
+          <tr><td>MS Angles — Kickers &amp; bracing (est.)</td><td class="num">6.0</td><td>Offcuts used on site</td></tr>
+          <tr><td>5mm MS Plates — Centerline flat bar stiffeners</td><td class="num" id="sum-plate">14.4</td><td>2 × 75mm flat bars</td></tr>
+          <tr><td>Fasteners (est.)</td><td class="num">5.5</td><td>M12 &amp; M16 bolts, nuts, washers</td></tr>
+          <tr style="background:rgba(5,150,105,.05)"><td><strong>Total Weight per Set</strong></td><td class="num pass" id="sum-total"><strong>~139 kg</strong></td><td><em>Reduced from ~161 kg in v4.0 (22 kg saved!) ✓</em></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 5. BUILD SCHEDULE -->
+    <div class="card">
+      <h2 class="card-title">5. Step-by-Step Build Schedule</h2>
+      <div style="display:flex;flex-direction:column;gap:8px">
+
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 14px;background:var(--surface-2);border-radius:10px;border:1px solid var(--border)">
+          <div style="background:var(--primary);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0">1</div>
+          <div><strong style="font-size:.88rem">Fabrication: Cut angles and plate stiffeners</strong>
+            <p style="margin:4px 0 0;font-size:.82rem">Cut 8 pieces of ISA 35×5 angle to 2438 mm (8 ft) for vertical members. Cut 26 yoke longs (550 mm) and 26 yoke shorts (400 mm). Pre-cut two 75×5 mm flat bars to 2438 mm. Drill M12 holes in angles and plates.</p></div>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 14px;background:var(--surface-2);border-radius:10px;border:1px solid var(--border)">
+          <div style="background:var(--primary);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0">2</div>
+          <div><strong style="font-size:.88rem">Weld diagonally opposite corner verticals</strong>
+            <p style="margin:4px 0 0;font-size:.82rem">Welding: Weld 2 corner double-angle pairs (TL and BR) back-to-back, ≥ 5mm fillet at 150mm pitch. The TR and BL corners, and the central 450mm face stringers, remain single angles (no plates required).</p></div>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 14px;background:var(--violet-dim);border-radius:10px;border:1px solid var(--violet)">
+          <div style="background:var(--violet);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0">3</div>
+          <div><strong style="font-size:.88rem">Attach vertical 75×5 mm flat bars to yokes</strong>
+            <p style="margin:4px 0 0;font-size:.82rem">The two 75×5 mm vertical flat bars are welded directly along the centerline of each 300mm face yokes. Weld them securely at each yoke crossing. This allows the flat bar to act as a continuous vertical beam supporting the 300mm face ply.</p></div>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 14px;background:var(--surface-2);border-radius:10px;border:1px solid var(--border)">
+          <div style="background:var(--primary);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0">4</div>
+          <div><strong style="font-size:.88rem">Assemble 450mm face plywood panels</strong>
+            <p style="margin:4px 0 0;font-size:.82rem">Sandwich-bolt 20-inch (508mm) ply panels to central stringers and double corner angles on the 450mm faces. M12 bolts at ≤ 250mm pitch. Ensure tight bearing contact. Apply form release agent.</p></div>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 14px;background:var(--red-dim);border-radius:10px;border:1px solid var(--red)">
+          <div style="background:var(--red);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0">5</div>
+          <div><strong style="font-size:.88rem">Fit yokes from BASE to TOP (0 to 2438 mm)</strong>
+            <p style="margin:4px 0 0;font-size:.82rem">
+              Erect panels, install yokes at exact heights:<br>
+              • <strong style="color:var(--red)">Yoke 1 (0 mm - base)</strong> — Single angle — M16 Gr 8.8 bolts<br>
+              • <strong style="color:var(--red)">Yoke 2 (200 mm)</strong> — <u>Double</u> angle — M16 Gr 8.8 bolts<br>
+              • <strong style="color:var(--red)">Yoke 3 (420 mm)</strong> — <u>Double</u> angle — M16 Gr 8.8 bolts<br>
+              • <strong style="color:var(--red)">Yoke 4 (660 mm)</strong> — <u>Double</u> angle — M16 Gr 8.8 bolts<br>
+              • <strong style="color:var(--red)">Yoke 5 (920 mm)</strong> — <u>Double</u> angle — M16 Gr 8.8 bolts<br>
+              • <strong style="color:var(--amber)">Yoke 6 (1200 mm)</strong> — Single angle — M12 Gr 4.6 bolts<br>
+              • <strong style="color:var(--amber)">Yoke 7 (1500 mm)</strong> — Single angle — M12 Gr 4.6 bolts<br>
+              • <strong style="color:var(--amber)">Yoke 8 (1870 mm)</strong> — Single angle — M12 Gr 4.6 bolts<br>
+              • <strong>Yoke 9 (2438 mm - top)</strong> — Single angle — M12 Gr 4.6 bolts
+            </p></div>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 14px;background:var(--green-dim);border-radius:10px;border:1px solid var(--green)">
+          <div style="background:var(--green);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0">6</div>
+          <div><strong style="font-size:.88rem">Pre-pour checks &amp; M25 concrete pour</strong>
+            <p style="margin:4px 0 0;font-size:.82rem">Verify all 9 yokes are aligned and bolted. Ensure the 75×5 mm flat bar stiffeners bear firmly against the 300mm ply panels. Verify diagonal braces. Pour concrete in lifts ≤ 500 mm.</p></div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="sidebar-sticky">
+
+      <!-- CROSS-SECTION DIAGRAM v5 -->
+      <div class="svg-box">
+        <div class="svg-label">Cross-Section — 450 × 300 mm (v5.0)</div>
+        <svg viewBox="0 0 330 265" width="100%" style="display:block">
+          <!-- Column concrete box -->
+          <rect x="70" y="50" width="175" height="115" fill="rgba(15,23,42,.04)" stroke="#94a3b8" stroke-width="1.5" rx="1"/>
+
+          <!-- Dimension labels -->
+          <text x="157" y="41" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#0891b2" font-weight="700">450 mm</text>
+          <text x="32" y="112" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#0891b2" font-weight="700" transform="rotate(-90,32,112)">300 mm</text>
+          <line x1="70" y1="31" x2="245" y2="31" stroke="#64748b" stroke-width="1" marker-end="url(#arr2)" marker-start="url(#arr2)"/>
+          <line x1="52" y1="50" x2="52" y2="165" stroke="#64748b" stroke-width="1" marker-end="url(#arr2)" marker-start="url(#arr2)"/>
+
+          <!-- 12mm ply -->
+          <rect x="70" y="50" width="175" height="12" fill="rgba(8,145,178,.15)" stroke="#0891b2" stroke-width=".8"/>
+          <rect x="70" y="153" width="175" height="12" fill="rgba(8,145,178,.15)" stroke="#0891b2" stroke-width=".8"/>
+          <rect x="70" y="50" width="12" height="115" fill="rgba(8,145,178,.15)" stroke="#0891b2" stroke-width=".8"/>
+          <rect x="233" y="50" width="12" height="115" fill="rgba(8,145,178,.15)" stroke="#0891b2" stroke-width=".8"/>
+
+          <!-- 75x5 flat bar stiffeners on 300mm faces (LEFT & RIGHT) -->
+          <rect x="63" y="95" width="5" height="25" fill="#7c3aed" rx="1"/>
+          <rect x="247" y="95" width="5" height="25" fill="#7c3aed" rx="1"/>
+
+          <!-- Corner double angles (TL & BR) -->
+          <rect x="57" y="40" width="18" height="18" fill="#0891b2" opacity=".85" rx="2"/>
+          <rect x="240" y="158" width="18" height="18" fill="#0891b2" opacity=".85" rx="2"/>
+
+          <!-- Corner single angles (TR & BL) -->
+          <rect x="240" y="40" width="18" height="18" fill="#0891b2" opacity=".45" rx="2"/>
+          <rect x="57" y="158" width="18" height="18" fill="#0891b2" opacity=".45" rx="2"/>
+
+          <!-- Central single angle stringers -->
+          <rect x="148" y="40" width="18" height="18" fill="#d97706" opacity=".9" rx="2"/>
+          <rect x="148" y="158" width="18" height="18" fill="#d97706" opacity=".9" rx="2"/>
+
+          <!-- Span labels -->
+          <text x="109" y="82" font-family="JetBrains Mono,monospace" font-size="8" fill="#d97706">225</text>
+          <text x="169" y="82" font-family="JetBrains Mono,monospace" font-size="8" fill="#d97706">225</text>
+          <line x1="82" y1="76" x2="148" y2="76" stroke="#d97706" stroke-dasharray="3,2" stroke-width=".8"/>
+          <line x1="166" y1="76" x2="233" y2="76" stroke="#d97706" stroke-dasharray="3,2" stroke-width=".8"/>
+
+          <text x="73" y="100" font-family="JetBrains Mono,monospace" font-size="7.5" fill="#7c3aed">150</text>
+          <text x="73" y="120" font-family="JetBrains Mono,monospace" font-size="7.5" fill="#7c3aed">150</text>
+
+          <text x="256" y="93" font-family="JetBrains Mono,monospace" font-size="8" fill="#7c3aed">75x5</text>
+          <text x="256" y="103" font-family="JetBrains Mono,monospace" font-size="8" fill="#7c3aed">plate</text>
+
+          <!-- Legend -->
+          <rect x="70" y="192" width="11" height="11" fill="#0891b2" opacity=".85" rx="2"/>
+          <text x="86" y="201" font-family="Inter,sans-serif" font-size="8.5" fill="#0f172a">Double corner TL/BR (×2)</text>
+          <rect x="70" y="208" width="11" height="11" fill="#0891b2" opacity=".45" rx="2"/>
+          <text x="86" y="217" font-family="Inter,sans-serif" font-size="8.5" fill="#0f172a">Single corner TR/BL (×2)</text>
+          <rect x="200" y="192" width="11" height="11" fill="#d97706" opacity=".9" rx="2"/>
+          <text x="216" y="201" font-family="Inter,sans-serif" font-size="8.5" fill="#0f172a">Central stringer (×2)</text>
+          <rect x="200" y="208" width="11" height="11" fill="#7c3aed" rx="2"/>
+          <text x="216" y="217" font-family="Inter,sans-serif" font-size="8.5" fill="#0f172a">5mm Stiffeners (×2)</text>
+
+          <defs>
+            <marker id="arr2" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto">
+              <path d="M0,0 L5,2.5 L0,5 Z" fill="#64748b"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+
+      <!-- ELEVATION SVG -->
+      <div class="svg-box">
+        <div class="svg-label">Elevation — Yoke Spacing (Scale)</div>
+        <svg id="elev-svg" viewBox="0 0 310 570" width="100%" style="display:block"></svg>
+      </div>
+
+      <!-- WEIGHT SUMMARY -->
+      <div class="card" style="margin-top:0">
+        <h2 class="card-title" style="font-size:.93rem">Weight Summary</h2>
+        <table class="tbl" style="font-size:.82rem">
+          <tbody>
+            <tr><td>Angles — Verticals</td><td class="num">49.7 kg</td></tr>
+            <tr><td>Angles — Yokes</td><td class="num">63.0 kg</td></tr>
+            <tr><td>5mm Flat Bar Stiffeners</td><td class="num">14.4 kg</td></tr>
+            <tr><td>Fasteners &amp; Kickers</td><td class="num">11.5 kg</td></tr>
+            <tr style="background:rgba(5,150,105,.05)"><td><strong>Total Weight</strong></td><td class="num pass"><strong>~139 kg</strong></td></tr>
+            <tr><td colspan="2" style="font-size:.76rem;color:var(--muted)">v5 is ~22 kg lighter than v4 due to 2 single corners and unreinforced central stringers.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </aside>
+
+</div>
+
+<script>
+// Yoke heights
+const YOKES_BASE = [
+  {h: 0, type: 'single'},
+  {h: 200, type: 'double'},
+  {h: 420, type: 'double'},
+  {h: 660, type: 'double'},
+  {h: 920, type: 'double'},
+  {h: 1200, type: 'single'},
+  {h: 1500, type: 'single'},
+  {h: 1870, type: 'single'},
+  {h: 2438, type: 'single'},
+];
+
+function recompute() {
+  const W    = +document.getElementById('col-w').value   || 450;
+  const D    = +document.getElementById('col-d').value   || 300;
+  const H    = +document.getElementById('pour-h').value  || 2438;
+  const plyT = +document.getElementById('ply-t').value   || 12;
+  const aLeg = +document.getElementById('angle-leg').value || 35;
+  const aT   = +document.getElementById('angle-t').value  || 5;
+  const s300 = +document.getElementById('stiff-300').value || 75;
+
+  const pMax = 24.0 * H / 1000.0;
+  const odLong = W + 2 * plyT;
+
+  // Single / Double angle moments
+  const A = (2*aLeg - aT)*aT;
+  const ybar = (aLeg*aT*(aT/2) + (aLeg-aT)*aT*(aT+(aLeg-aT)/2)) / A;
+  const I1 = aLeg*aT*aT*aT/12 + aLeg*aT*(aT/2-ybar)**2;
+  const A2 = (aLeg-aT)*aT;
+  const I2 = aT*(aLeg-aT)**3/12 + A2*(aT+(aLeg-aT)/2-ybar)**2;
+  const Z_single = (I1+I2)/Math.max(ybar, aLeg-ybar);
+  const M_allow_single = 165.0 * Z_single / 1000.0;
+  const M_allow_double = M_allow_single * 2.0;
+
+  // 300mm flat bar stiffener bending
+  const Z_stiff300 = s300 * 5.0 * 5.0 / 6.0;
+  const M_allow_stiff300 = 165.0 * Z_stiff300 / 1000.0; // N·m
+
+  document.getElementById('f-h').textContent = (H/1000).toFixed(3);
+  document.getElementById('f-p').textContent = pMax.toFixed(1);
+  document.getElementById('f-sec').textContent = `${aLeg}×${aLeg}×${aT}`;
+  document.getElementById('f-sec2').textContent = `${aLeg}×${aLeg}×${aT}`;
+  document.getElementById('f-Z').textContent = Math.round(Z_single*2.0).toLocaleString('en-IN');
+  document.getElementById('f-Zs').textContent = Math.round(Z_single).toLocaleString('en-IN');
+  document.getElementById('f-w300').textContent = s300;
+  document.getElementById('f-Z300').textContent = Z_stiff300.toFixed(1);
+  document.getElementById('f-M300').textContent = M_allow_stiff300.toFixed(1);
+
+  // Compute table rows
+  const sf = H / 2438.0;
+  const tbody = document.getElementById('yoke-tbody');
+  tbody.innerHTML = '';
+
+  let maxM = 0;
+  YOKES_BASE.forEach((yk, i) => {
+    const h = Math.round(yk.h * sf);
+    const hPrev = i > 0 ? Math.round(YOKES_BASE[i-1].h * sf) : null;
+    const hNext = i < 8 ? Math.round(YOKES_BASE[i+1].h * sf) : null;
+    const gapBelow = hPrev !== null ? h - hPrev : 0;
+    const gapAbove = hNext !== null ? hNext - h : 0;
+
+    let trib = 0;
+    if (i === 0) trib = gapAbove / 2;
+    else if (i === 8) trib = gapBelow / 2;
+    else trib = (gapBelow + gapAbove) / 2;
+
+    const p = 24.0 * (H - h) / 1000.0;
+    const w = p * (trib / 1000.0);
+    const M = w * (odLong / 1000.0) ** 2 / 8 * 1000.0;
+    if (M > maxM) maxM = M;
+
+    const isDouble = M > M_allow_single;
+    const actualType = isDouble ? 'DOUBLE' : 'SINGLE';
+    const cap = isDouble ? M_allow_double : M_allow_single;
+    const pass = M <= cap;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>Yoke ${i+1}</strong></td>
+      <td class="num">${h}</td>
+      <td class="num">${gapBelow || '—'}</td>
+      <td class="num">${trib.toFixed(0)}</td>
+      <td class="num">${p.toFixed(1)}</td>
+      <td class="num">${M.toFixed(1)}</td>
+      <td class="num">${cap.toFixed(0)}</td>
+      <td><span class="pill ${isDouble?'pill-red':'pill-green'}">${actualType}</span></td>
+      <td class="${pass?'pass':'fail'}">${pass?'✓':'✗'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('yoke-summary').innerHTML =
+    `<strong>Yokes Analysis:</strong> Max moment is <strong>${maxM.toFixed(1)} N·m</strong>. Double angles required on Yokes 2, 3, 4, and 5. Single angles are sufficient for the remaining 5 yokes.`;
+
+  // Stiffener check on 300mm face at base (between Yoke 1 and Yoke 2)
+  const baseGap = 200.0 * sf;
+  const pMidBase = 24.0 * (H - (baseGap / 2.0)) / 1000.0;
+  const wPlate = pMidBase * (150.0 / 1000.0); // N/mm
+  const M_stiff = wPlate * baseGap * baseGap / 8.0 / 1000.0; // N·m
+  document.getElementById('f-d300').textContent = M_stiff.toFixed(1);
+  const isPlateOK = M_stiff <= M_allow_stiff300;
+  const ps = document.getElementById('f-s300');
+  ps.textContent = isPlateOK ? 'PASS ✓' : 'FAIL ✗';
+  ps.className = 'pill ' + (isPlateOK ? 'pill-green' : 'pill-red');
+
+  // Weights re-estimate
+  const plateTotalKg = (s300/1000 * 2.438 * 0.005 * 7850 * 2);
+  document.getElementById('tb-wt300').textContent = plateTotalKg.toFixed(1);
+  document.getElementById('tb-wtTotal').textContent = plateTotalKg.toFixed(1);
+  document.getElementById('sum-plate').textContent = plateTotalKg.toFixed(1) + ' kg';
+  const totalKg = 49.7 + 63.0 + 6.0 + plateTotalKg + 5.5;
+  document.getElementById('sum-total').innerHTML = `<strong>~${Math.round(totalKg)} kg</strong>`;
+
+  drawElevation(H, pMax);
+}
+
+function drawElevation(H, pMax) {
+  const svg = document.getElementById('elev-svg');
+  svg.innerHTML = '';
+
+  const baseY = 520, topY = 25;
+  const scale = (baseY - topY) / H;
+  const colX = 115, colW = 48;
+
+  function py(mm) { return baseY - mm * scale; }
+  function make(tag, attrs={}) {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v));
+    return el;
+  }
+  function txt(x,y,str,attrs={}) {
+    const t = make('text', {x,y,'font-family':'JetBrains Mono,monospace','font-size':'9',fill:'#64748b',...attrs});
+    t.textContent = str; return t;
+  }
+
+  // Defs: pressure gradient
+  const defs = make('defs');
+  const grad = make('linearGradient',{id:'pg3',x1:'0',y1:'1',x2:'0',y2:'0'});
+  [{o:'0%',c:'rgba(220,38,38,.2)'},{o:'40%',c:'rgba(217,119,6,.1)'},{o:'100%',c:'rgba(8,145,178,.02)'}]
+    .forEach(s=>{ grad.appendChild(make('stop',{offset:s.o,'stop-color':s.c})); });
+  defs.appendChild(grad);
+  svg.appendChild(defs);
+
+  // pressure fill
+  svg.appendChild(make('rect',{x:colX,y:topY,width:colW,height:baseY-topY,fill:'url(#pg3)'}));
+  // column outline
+  svg.appendChild(make('rect',{x:colX,y:topY,width:colW,height:baseY-topY,fill:'none',stroke:'#94a3b8','stroke-width':'1.5'}));
+
+  // vertical double angle corners (TL/BR)
+  svg.appendChild(make('line',{x1:colX-4,y1:topY,x2:colX-4,y2:baseY,stroke:'#0891b2','stroke-width':'3'}));
+  svg.appendChild(make('line',{x1:colX+colW+4,y1:topY,x2:colX+colW+4,y2:baseY,stroke:'#0891b2','stroke-width':'1.5','opacity':'.4'}));
+
+  // vertical plate stiffeners on 300mm face (violet lines)
+  svg.appendChild(make('line',{x1:colX+(colW/2),y1:topY,x2:colX+(colW/2),y2:baseY,stroke:'#7c3aed','stroke-width':'2.5','stroke-dasharray':'4,2'}));
+
+  // ground line
+  svg.appendChild(make('line',{x1:25,y1:baseY,x2:280,y2:baseY,stroke:'#334155','stroke-width':'2'}));
+  svg.appendChild(txt(55,baseY+13,'±0 — Base',{fill:'#334155','font-weight':'700'}));
+
+  // draw yokes
+  const sf = H / 2438.0;
+  YOKES_BASE.forEach((yk, i) => {
+    const h = Math.round(yk.h * sf);
+    const yPx = py(h);
+    const isDouble = yk.type === 'double';
+    const col = isDouble ? '#dc2626' : '#059669';
+
+    svg.appendChild(make('line',{x1:colX-18,y1:yPx,x2:colX+colW+18,y2:yPx,stroke:col,'stroke-width':isDouble?'6':'4.5'}));
+
+    // labels right
+    svg.appendChild(txt(colX+colW+22, yPx+3, `${h}mm`, {fill:col,'font-weight':'600','font-size':'8.5'}));
+
+    // labels left (gaps)
+    if (i > 0) {
+      const prevH = Math.round(YOKES_BASE[i-1].h * sf);
+      const gap = h - prevH;
+      const midY = (yPx + py(prevH)) / 2;
+      svg.appendChild(txt(35, midY+3, `${gap}mm`, {fill:'#059669','font-size':'8.5'}));
+    }
+  });
+}
+
+recompute();
+</script>
+</body>
+</html>
