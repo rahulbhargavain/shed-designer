@@ -199,3 +199,12 @@ test('All modules run fast enough for live recalculation (< 500 ms total)', () =
   RCC.designFloor({ ...floorBase, ...fp('heavy') }, settings);
   assert.ok(Date.now() - t < 500);
 });
+
+test('Road: hilly region (e.g. Bhimtal) warns until a site ΔT is given; ΔT override drives curling', () => {
+  const hill = RCC.designRoad({ ...roadBase, ...rp('campus'), region: 'hilly', dtOverride: 0 }, settings);
+  assert.ok(hill.ok && hill.warnings.some(w => /hilly/.test(w)));
+  const site = RCC.designRoad({ ...roadBase, ...rp('campus'), region: 'hilly', dtOverride: 18 }, settings);
+  assert.ok(!site.warnings.some(w => /hilly/.test(w)));
+  const hot = RCC.designRoad({ ...roadBase, ...rp('campus'), region: 'hilly', dtOverride: 22 }, settings);
+  assert.ok(hot.boq.total >= site.boq.total);
+});

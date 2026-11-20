@@ -244,6 +244,7 @@
           N('cbr', 'Subgrade soaked CBR', 6, { unit: '%', step: 0.5 }),
           N('kOverride', 'k from plate-load test (0 = from CBR)', 0, { unit: 'MPa/m', step: 5 }),
           S('region', 'Climate region (IRC 58 ΔT)', 'central', opts(RCC.REGIONS), { wide: true }),
+          N('dtOverride', 'Site temperature differential ΔT (0 = from region)', 0, { unit: '°C', step: 0.5 }),
           N('roadWidth', 'Carriageway width', 7, { unit: 'm', step: 0.5 }),
           N('laneWidth', 'Panel / lane width', 3.5, { unit: 'm', step: 0.25 }),
           N('length', 'Road length', 500, { unit: 'm', step: 10 }),

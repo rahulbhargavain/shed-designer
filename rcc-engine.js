@@ -632,7 +632,9 @@
   ];
   // IRC 58 temperature differential (°C) by region for h = 150/200/250/300 mm
   const REGIONS = {
-    north: { label: 'Punjab, UP, Haryana, Rajasthan, Gujarat, N. MP', dt: [12.5, 13.1, 14.3, 15.8] },
+    north: { label: 'Punjab, UP, Uttarakhand (plains), Haryana, Rajasthan, Gujarat, N. MP', dt: [12.5, 13.1, 14.3, 15.8] },
+    // IRC 58 excludes hilly regions from its table; north-zone values are a starting point only
+    hilly: { label: 'Hilly regions — Uttarakhand / HP hills (e.g. Bhimtal, Nainital)', dt: [12.5, 13.1, 14.3, 15.8], hilly: true },
     east: { label: 'Bihar, Jharkhand, WB, Assam, E. Odisha', dt: [15.6, 16.4, 16.6, 16.8] },
     central: { label: 'Maharashtra, Karnataka, S. MP, Chhattisgarh, AP, Telangana, W. Odisha', dt: [17.3, 19.0, 20.3, 21.0] },
     south: { label: 'Kerala, S. Tamil Nadu', dt: [15.0, 16.4, 17.6, 18.1] },
@@ -699,7 +701,7 @@
         cfd += Number.isFinite(N) ? g.reps / N : 0;
         return { ...g, P, a, se, sc: cornerStress(P, h, l, a), N };
       });
-      const dT = interp(DT_H, dtTable, h);
+      const dT = inp.dtOverride > 0 ? inp.dtOverride : interp(DT_H, dtTable, h);
       const C = bradburyC(inp.jointSpacing * 1000 / l);
       const st = C * E * alpha * dT / 2;
       const heavy = rows[1];
@@ -763,6 +765,7 @@
     rows.push(boqRow('Sawn joints + sealant', area * (1 / b.joint + longJ), 'm', R.sawcut));
     const boq = finishBoq(rows);
     const warnings = [];
+    if (REGIONS[inp.region].hilly && !(inp.dtOverride > 0)) warnings.push('IRC 58 gives no temperature differential for hilly regions; north-zone values (12.5–15.8 °C) are used. Enter a site ΔT if you have slab top–bottom temperature data, and check frost / freeze–thaw exposure for the concrete.');
     if (inp.cbr < 4 && !(inp.kOverride > 0)) warnings.push(`Subgrade CBR ${inp.cbr}% is weak: replace the top 500 mm with selected soil of CBR ≥ 8% and re-run with CBR 8.`);
     const bestJ = designs.find(d => d.type === 'JPCP'), bestR = designs.find(d => d.type === 'JRCP');
     return {
@@ -781,7 +784,7 @@
           ['Flexural strength', `${round(b.MR, 2)} MPa (0.7√fck, ${b.grade})`],
           ['Radius of relative stiffness', `${round(b.l, 0)} mm`],
           ['Edge stress — commercial / heaviest', `${round(b.rows[0].se, 2)} / ${round(b.rows[1].se, 2)} MPa`],
-          ['Curling stress', `${round(b.st, 2)} MPa (ΔT ${round(b.dT, 1)} °C, C = ${round(b.C, 2)})`],
+          ['Curling stress', `${round(b.st, 2)} MPa (ΔT ${round(b.dT, 1)} °C ${inp.dtOverride > 0 ? 'user-entered' : REGIONS[inp.region].hilly ? 'north-zone proxy' : 'IRC 58'}, C = ${round(b.C, 2)})`],
           ['Cumulative fatigue damage', `${round(b.cfd, 3)}`],
         ] },
         { title: 'Reinforcement & joints', rows: [
