@@ -440,7 +440,12 @@
         label: `${x.r.grade}, ${x.r.D} mm`, detail: `${barStr(x.r.xb)} / ${barStr(x.r.yb)}`,
         cost: x.boq.total, best: x.r === b,
       })),
-      drawing: { type: 'slab', D: b.D, cover: b.cover, fill: inp.fill, span: b.Lx, bottom: b.xb, top: b.xt, wall: inp.wall, label: 'Section across short span' },
+      drawing: {
+        type: 'tank', D: b.D, cover: b.cover, grade: b.grade, fill: inp.fill, fillGamma: inp.soilGamma, finish: inp.finish,
+        span: b.Lx, Lx: b.Lx, Ly: b.Ly, lx: p.lx, ly: p.ly, wall: inp.wall, xb: b.xb, yb: b.yb, xt: b.xt, yt: b.yt,
+        oneWay: b.oneWay, edge: inp.edge, manhole: inp.manhole, torsion: torsion > 0, P: inp.P, q: inp.q, impact: inp.impact,
+        along: Math.min(inp.a || 0, inp.b || 0), steel: STEELS[s.steel].label,
+      },
       notes: [
         'Wheel load dispersed at 45° through fill; effective width per IS 456 Cl 24.3.2; wheel moments taken as simply supported (fixed edges: PL/8).',
         'Live UDL and wheel load are not combined — the worse governs (IS 875-2).',
@@ -596,7 +601,13 @@
       alternatives: bestPerKey(all, r => r.grade).map(r => ({
         label: `${r.grade}: wall ${r.tw} / base ${r.tb} mm`, detail: `soil face ${barStr(r.soil)}`, cost: Math.round(r.costM * L), best: r === b,
       })),
-      drawing: { type: 'drain', B: inp.B, H: inp.H, tw: b.tw, tb: b.tb, cover, coverD: cov ? cov.D : 0, soil: b.soil, inner: b.inner, bot: b.bot, top: b.topb },
+      drawing: {
+        type: 'drain', B: inp.B, H: inp.H, tw: b.tw, tb: b.tb, cover, coverBase, grade: b.grade, coverD: cov ? cov.D : 0,
+        soil: b.soil, inner: b.inner, horiz: b.horiz, bot: b.bot, top: b.topb, dist: b.dist,
+        cov: cov ? { D: cov.D, grade: cov.grade, cover: cov.cover, xb: cov.xb, yb: cov.yb, Lx: cov.Lx } : null,
+        unitWidth: inp.unitWidth, K0, gamma: inp.gamma, surch, Hw, MsSoil: Ms_soil, MsW: Ms_w, qGross: b.qGross, sbc: inp.sbc,
+        P: inp.covered ? inp.P : 0, impact: inp.impact, along: Math.min(inp.a || 0, inp.b || 0), steel: STEELS[s.steel].label,
+      },
       notes: [
         'Walls designed as cantilevers from the base (cover slab assumed not to prop the walls).',
         'Inner face designed for drain running full with no backfill (construction / test condition).',
@@ -633,8 +644,9 @@
   // IRC 58 temperature differential (°C) by region for h = 150/200/250/300 mm
   const REGIONS = {
     north: { label: 'Punjab, UP, Uttarakhand (plains), Haryana, Rajasthan, Gujarat, N. MP', dt: [12.5, 13.1, 14.3, 15.8] },
-    // IRC 58 excludes hilly regions from its table; north-zone values are a starting point only
-    hilly: { label: 'Hilly regions — Uttarakhand / HP hills (e.g. Bhimtal, Nainital)', dt: [12.5, 13.1, 14.3, 15.8], hilly: true },
+    // IRC 58 excludes hilly regions from its table; 18 °C adopted for Bhimtal (high altitude: strong solar
+    // radiation, large day–night swing). Override with measured site data when available.
+    hilly: { label: 'Bhimtal / Uttarakhand & HP hills (ΔT 18 °C)', dt: [18, 18, 18, 18], hilly: true },
     east: { label: 'Bihar, Jharkhand, WB, Assam, E. Odisha', dt: [15.6, 16.4, 16.6, 16.8] },
     central: { label: 'Maharashtra, Karnataka, S. MP, Chhattisgarh, AP, Telangana, W. Odisha', dt: [17.3, 19.0, 20.3, 21.0] },
     south: { label: 'Kerala, S. Tamil Nadu', dt: [15.0, 16.4, 17.6, 18.1] },
@@ -765,7 +777,6 @@
     rows.push(boqRow('Sawn joints + sealant', area * (1 / b.joint + longJ), 'm', R.sawcut));
     const boq = finishBoq(rows);
     const warnings = [];
-    if (REGIONS[inp.region].hilly && !(inp.dtOverride > 0)) warnings.push('IRC 58 gives no temperature differential for hilly regions; north-zone values (12.5–15.8 °C) are used. Enter a site ΔT if you have slab top–bottom temperature data, and check frost / freeze–thaw exposure for the concrete.');
     if (inp.cbr < 4 && !(inp.kOverride > 0)) warnings.push(`Subgrade CBR ${inp.cbr}% is weak: replace the top 500 mm with selected soil of CBR ≥ 8% and re-run with CBR 8.`);
     const bestJ = designs.find(d => d.type === 'JPCP'), bestR = designs.find(d => d.type === 'JRCP');
     return {
@@ -784,7 +795,7 @@
           ['Flexural strength', `${round(b.MR, 2)} MPa (0.7√fck, ${b.grade})`],
           ['Radius of relative stiffness', `${round(b.l, 0)} mm`],
           ['Edge stress — commercial / heaviest', `${round(b.rows[0].se, 2)} / ${round(b.rows[1].se, 2)} MPa`],
-          ['Curling stress', `${round(b.st, 2)} MPa (ΔT ${round(b.dT, 1)} °C ${inp.dtOverride > 0 ? 'user-entered' : REGIONS[inp.region].hilly ? 'north-zone proxy' : 'IRC 58'}, C = ${round(b.C, 2)})`],
+          ['Curling stress', `${round(b.st, 2)} MPa (ΔT ${round(b.dT, 1)} °C ${inp.dtOverride > 0 ? 'user-entered' : REGIONS[inp.region].hilly ? 'hill default' : 'IRC 58'}, C = ${round(b.C, 2)})`],
           ['Cumulative fatigue damage', `${round(b.cfd, 3)}`],
         ] },
         { title: 'Reinforcement & joints', rows: [
@@ -805,11 +816,16 @@
       alternatives: [bestJ, bestR].filter(Boolean).concat(bestPerKey(designs, d => d.sb.id + d.type, 6).filter(d => d !== bestJ && d !== bestR)).slice(0, 5).map(d => ({
         label: `${d.type} ${d.h} mm ${d.grade}`, detail: d.sb.label + (d.type === 'JRCP' ? `, mesh ${barStr(d.mesh.L)}` : ''), cost: Math.round(d.costM2 * area), best: d === b,
       })),
-      drawing: { type: 'road', h: b.h, gsb: b.sb.gsb, dlc: b.sb.dlc, dw: b.dw, mesh: b.type === 'JRCP', grade: b.grade },
+      drawing: {
+        type: 'road', h: b.h, gsb: b.sb.gsb, dlc: b.sb.dlc, dw: b.dw, mesh: b.type === 'JRCP', meshBars: b.mesh || null,
+        tie: longJ > 0 ? b.tie : null, grade: b.grade, kind: b.type, joint: b.joint, roadWidth: inp.roadWidth, laneWidth: inp.laneWidth,
+        nL, k: b.k, cbr: inp.cbr, axle: inp.maxAxle, steel: STEELS[s.steel].label,
+      },
       notes: [
         'IRC 58 (2002 method): Westergaard edge/corner stresses, Bradbury curling, fatigue on edge load stress.',
         'JRCP curling computed at 4.5 m effective crack spacing (mesh holds intermediate cracks tight).',
         'Dowel bars are plain mild steel per IRC 58 — not TMT.',
+        ...(REGIONS[inp.region].hilly && !(inp.dtOverride > 0) ? ['Hilly region: IRC 58 gives no ΔT for hills, so 18 °C is adopted (Bhimtal default). Enter a measured site ΔT to override; check frost / freeze–thaw exposure.'] : []),
         'Curling often governs: a stiffer support (higher k) raises curling stress, so DLC does not always thin the slab.',
       ],
       warnings,
@@ -1006,7 +1022,11 @@
       checks: b.checks,
       boq,
       alternatives: byType.map(d => ({ label: `${d.h} mm ${d.grade} — ${d.opt.type}`, detail: reinfLabel(d.opt) + ', ' + d.sb.label, cost: Math.round(d.costM2 * A), best: d === b })),
-      drawing: { type: 'floor', h: b.h, gsb: b.sb.gsb, wmm: b.sb.wmm, dlc: b.sb.dlc, opt: b.opt, topMesh: inp.topMesh, S: b.S, aisle: inp.aisle, post: inp.post > 0 },
+      drawing: {
+        type: 'floor', h: b.h, grade: b.grade, gsb: b.sb.gsb, wmm: b.sb.wmm, dlc: b.sb.dlc, opt: b.opt, topMesh: inp.topMesh, S: b.S,
+        aisle: inp.aisle, post: inp.post > 0, postLoad: inp.post, plate: inp.plate, x: inp.x, y: inp.y, wheel: inp.wheel,
+        tyre: TYRES[inp.tyre].label, udl: inp.udl, k: b.k, membrane: inp.membrane, steel: STEELS[s.steel].label,
+      },
       notes: [
         'TR34 (4th ed.) yield-line method; partial factors: racking 1.2, MHE 1.6, UDL/line/mezzanine 1.5.',
         'Fibre residual strengths (fR1, fR4) are typical hooked-end values — confirm with the supplier’s EN 14651 test data.',

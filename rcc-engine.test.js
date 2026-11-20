@@ -200,11 +200,12 @@ test('All modules run fast enough for live recalculation (< 500 ms total)', () =
   assert.ok(Date.now() - t < 500);
 });
 
-test('Road: hilly region (e.g. Bhimtal) warns until a site ΔT is given; ΔT override drives curling', () => {
+test('Road: hilly region (Bhimtal) defaults to ΔT 18 °C; ΔT override drives curling', () => {
   const hill = RCC.designRoad({ ...roadBase, ...rp('campus'), region: 'hilly', dtOverride: 0 }, settings);
-  assert.ok(hill.ok && hill.warnings.some(w => /hilly/.test(w)));
-  const site = RCC.designRoad({ ...roadBase, ...rp('campus'), region: 'hilly', dtOverride: 18 }, settings);
-  assert.ok(!site.warnings.some(w => /hilly/.test(w)));
+  const site18 = RCC.designRoad({ ...roadBase, ...rp('campus'), region: 'hilly', dtOverride: 18 }, settings);
+  assert.ok(hill.ok);
+  assert.equal(hill.boq.total, site18.boq.total);
+  assert.ok(hill.sections[0].rows.some(r => /ΔT 18 °C hill default/.test(r[1])));
   const hot = RCC.designRoad({ ...roadBase, ...rp('campus'), region: 'hilly', dtOverride: 22 }, settings);
-  assert.ok(hot.boq.total >= site.boq.total);
+  assert.ok(hot.boq.total >= site18.boq.total);
 });

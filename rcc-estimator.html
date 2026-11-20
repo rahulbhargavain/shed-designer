@@ -99,25 +99,89 @@
     .callout-blue{background:var(--primary-dim);border-color:var(--primary)}
     .notes{font-size:.82rem;color:var(--muted);padding-left:18px}
     .notes li{margin:4px 0}
-    svg.draw{width:100%;height:auto;display:block}
-    svg .conc{fill:var(--concrete);stroke:var(--concrete-edge);stroke-width:1}
-    svg .soil{fill:var(--soil)}
-    svg .gsb{fill:var(--gsb);stroke:#cbb894;stroke-width:.6}
-    svg .dlc{fill:var(--dlc);stroke:var(--concrete-edge);stroke-width:.6}
-    svg .wall{fill:#cbd5e1;stroke:var(--concrete-edge)}
-    svg .bar-l{stroke:var(--steel);stroke-width:2;fill:none}
-    svg .bar-d{fill:var(--steel)}
-    svg .dowel{stroke:#475569;stroke-width:4;stroke-linecap:round}
-    svg .dim{stroke:var(--muted);stroke-width:.8;fill:none}
-    svg .joint{stroke:#475569;stroke-width:1.4}
-    svg .grid-l{stroke:var(--primary);stroke-width:.8;stroke-dasharray:4 3}
-    svg .arm{stroke:#0f172a;stroke-width:2.2}
-    svg .rack{fill:var(--violet-dim);stroke:var(--violet);stroke-width:.8}
-    svg .stack{fill:#e2e8f0;stroke:#94a3b8;stroke-width:.6}
-    svg .mem{stroke:#0891b2;stroke-width:1.2;stroke-dasharray:2 2}
-    svg text{font-family:'Inter',sans-serif;font-size:14px;fill:var(--text)}
-    svg text.m{fill:var(--muted);font-size:12.5px}
-    svg text.b{font-weight:700}
+    /* ── interactive drawings ── */
+    .dg-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:12px}
+    .dg-head .t{font-size:1rem;font-weight:700;color:var(--primary)}
+    .seg{display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:10px;flex-wrap:wrap}
+    .seg button{border:0;background:transparent;padding:6px 12px;border-radius:7px;font:inherit;font-size:.8rem;font-weight:600;color:var(--muted);cursor:pointer}
+    .seg button.on{background:#fff;color:var(--primary);box-shadow:0 1px 3px rgba(15,23,42,.12)}
+    .dg-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:.78rem}
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--border);border-radius:20px;cursor:pointer;color:var(--text);user-select:none}
+    .chip input{accent-color:var(--primary);width:14px;height:14px}
+    .dg-tools .sp{flex:1}
+    .zbtn{width:30px;height:30px;border:1px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font:inherit;font-weight:700;color:var(--text)}
+    .zbtn:hover{background:var(--surface-2)}
+    .dg-stage{position:relative;border:1px solid var(--border);border-radius:12px;background:#fcfdfe;overflow:hidden;touch-action:pan-y}
+    .dg-stage.zoomed{touch-action:none;cursor:grab}
+    .dg-stage.dragging{cursor:grabbing}
+    .dg-svg{width:100%;height:auto;display:block;user-select:none}
+    .dg-tip{position:absolute;pointer-events:none;background:#0f172a;color:#fff;font-size:.76rem;line-height:1.45;padding:8px 10px;border-radius:8px;max-width:300px;white-space:pre-line;opacity:0;transition:opacity .12s;z-index:2;box-shadow:0 6px 20px rgba(15,23,42,.25)}
+    .dg-tip.show{opacity:1}
+    .dg-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:.74rem;color:var(--muted)}
+    .dg-legend{display:flex;gap:12px;flex-wrap:wrap}
+    .dg-legend span{display:inline-flex;align-items:center;gap:5px}
+    .dg-legend svg{width:18px;height:12px;border-radius:2px}
+    .dg-stage.hide-rebar [data-layer="rebar"],.dg-stage.hide-dims [data-layer="dims"],.dg-stage.hide-labels [data-layer="labels"]{display:none}
+    .dg-svg .conc,.dg-svg .wall{fill:url(#pConc);stroke:#94a3b8;stroke-width:1}
+    .dg-svg .conc-flat{fill:url(#pConc)}
+    .dg-svg .outline{fill:none;stroke:#94a3b8;stroke-width:1;pointer-events:none}
+    .dg-svg .conc-pc{fill:#eef2f7;stroke:#94a3b8;stroke-width:1}
+    .dg-svg .conc-plan{fill:#eef2f6;stroke:#94a3b8}
+    .dg-svg .soil{fill:url(#pSoil)}
+    .dg-svg .gsb{fill:url(#pGsb);stroke:#cbb894;stroke-width:.6}
+    .dg-svg .wmm{fill:url(#pWmm);stroke:#b8aa8c;stroke-width:.6}
+    .dg-svg .dlc{fill:url(#pDlc);stroke:#94a3b8;stroke-width:.6}
+    .dg-svg .pcc{fill:#d5dce5;stroke:#94a3b8;stroke-width:.6}
+    .dg-svg .void{fill:#fff;pointer-events:none}
+    .dg-svg .water{fill:rgba(8,145,178,.13)}
+    .dg-svg .wl{stroke:#0891b2;stroke-width:1;stroke-dasharray:5 3}
+    .dg-svg .rebar{stroke:#dc2626;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .dg-svg .rebar-top{stroke:#9333ea;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .dg-svg .tie{stroke:#ea580c;fill:none;stroke-linecap:round}
+    .dg-svg .mesh{stroke-dasharray:7 4}
+    .dg-svg .hit{stroke:transparent;stroke-width:12px;fill:none}
+    .dg-svg .dot{fill:#dc2626}.dg-svg .dot-top{fill:#9333ea}
+    .dg-svg .pbar{stroke:#dc2626;stroke-width:1}.dg-svg .pbar2{stroke:#b91c1c;stroke-width:1;opacity:.75}
+    .dg-svg .topband{fill:rgba(147,51,234,.06);stroke:#9333ea;stroke-width:1;stroke-dasharray:5 3}
+    .dg-svg .topmesh{fill:none;stroke:#9333ea;stroke-width:1.2;stroke-dasharray:6 4}
+    .dg-svg .torsion{fill:url(#pTors);stroke:#9333ea;stroke-width:.8}
+    .dg-svg .opening{fill:#fff;stroke:#475569;stroke-width:1.2;stroke-dasharray:4 2}
+    .dg-svg .trim{stroke:#dc2626;stroke-width:1.8}
+    .dg-svg .dowel{fill:#475569}.dg-svg .debond{fill:url(#pDebond)}
+    .dg-svg .dowel-l{stroke:#475569;stroke-width:1.6}.dg-svg .tie-l{stroke:#ea580c;stroke-width:1.4}
+    .dg-svg .joint-l{stroke:#0f172a;stroke-width:1.4}
+    .dg-svg .saw{stroke:#0f172a;stroke-width:2.2}.dg-svg .saw-fill{fill:#0f172a}.dg-svg .seal{fill:#334155}
+    .dg-svg .crack{stroke:#64748b;stroke-width:.8;stroke-dasharray:2 2;fill:none}
+    .dg-svg .brk{stroke:#64748b;fill:none}
+    .dg-svg .mem{stroke:#0891b2;stroke-width:1.4;stroke-dasharray:3 2}
+    .dg-svg .fibre{stroke:#334155;stroke-width:.9}
+    .dg-svg .load{stroke:#7c3aed;stroke-width:1.6}.dg-svg .load-h{fill:#7c3aed}
+    .dg-svg .tyre{fill:#1e293b;stroke:#475569;stroke-width:2}.dg-svg .patch{fill:#7c3aed}.dg-svg .axle{stroke:#1e293b;stroke-width:3}
+    .dg-svg .disp{fill:rgba(124,58,237,.07);stroke:#7c3aed;stroke-dasharray:4 3}
+    .dg-svg .press-s{fill:rgba(217,119,6,.22);stroke:#d97706}.dg-svg .press-q{fill:rgba(8,145,178,.15);stroke:#0891b2}
+    .dg-svg .press-w{fill:rgba(8,145,178,.07);stroke:#0891b2;stroke-dasharray:4 3}
+    .dg-svg .plate{fill:#334155}.dg-svg .upright{fill:#7c3aed}
+    .dg-svg .rack{fill:rgba(124,58,237,.10);stroke:#7c3aed;stroke-width:.8}
+    .dg-svg .stack{fill:#e2e8f0;stroke:#94a3b8;stroke-width:.8}
+    .dg-svg .grid-l{stroke:#0891b2;stroke-width:1;stroke-dasharray:5 4}
+    .dg-svg .arm{fill:none;stroke:#0f172a;stroke-width:2.6}
+    .dg-svg .dim{stroke:#64748b;stroke-width:.8;fill:none}
+    .dg-svg .lead{stroke:#94a3b8;stroke-width:.8;fill:none}
+    .dg-svg text{font-family:'Inter',sans-serif;font-size:12.5px;fill:#0f172a}
+    .dg-svg text.ttl{font-weight:700;font-size:14px}
+    .dg-svg text.dt{font-family:'JetBrains Mono',monospace;font-size:11.5px;fill:#475569}
+    .dg-svg text.lbl{font-size:12.5px}.dg-svg text.lbl-b{font-size:12.5px;font-weight:700}.dg-svg text.lbl-top{fill:#7e22ce}
+    .dg-svg text.note{font-size:11.5px;fill:#64748b}
+    .dg-svg text.load-t{font-size:12px;font-weight:700;fill:#6d28d9}
+    .dg-svg [data-tip]{cursor:help}
+    .dg-svg .hl,.dg-svg [data-tip]:hover{filter:drop-shadow(0 0 2.5px rgba(245,158,11,.95)) drop-shadow(0 0 1px rgba(245,158,11,.95))}
+    .dg-svg .hl .rebar,.dg-svg .hl .rebar-top,.dg-svg .hl .tie,.dg-svg .hl .pbar,.dg-svg .hl .pbar2{stroke:#f59e0b}
+    .dg-svg .hl .dot,.dg-svg .hl .dot-top{fill:#f59e0b}
+    tr.hl td{background:rgba(245,158,11,.12)!important}
+    .tile.hl{border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.25)}
+    [data-hl]{transition:background .12s}
+    tr[data-hl],.tile[data-hl]{cursor:pointer}
+    .spec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:4px 24px}
     .sum-row{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;cursor:pointer}
     .sum-row:last-child{border-bottom:0}
     .sum-row b{font-family:'JetBrains Mono',monospace;font-size:.84rem}
@@ -200,6 +264,7 @@
 <div class="toast" id="toast"></div>
 
 <script src="./rcc-engine.js"></script>
+<script src="./rcc-diagrams.js"></script>
 <script>
 (function () {
   'use strict';
@@ -418,118 +483,97 @@
     schedule();
   }
 
-  // ───────────── drawings ─────────────
-  function dotsAlong(x0, x1, y, spacingPx, r) {
-    let s = '', n = Math.max(2, Math.min(60, Math.floor((x1 - x0) / Math.max(spacingPx, 6))));
-    const step = (x1 - x0) / n;
-    for (let i = 0; i <= n; i++) s += `<circle class="bar-d" cx="${(x0 + i * step).toFixed(1)}" cy="${y.toFixed(1)}" r="${r}"/>`;
-    return s;
+  // ───────────── interactive drawings ─────────────
+  const HL_RULES = {
+    tank: [[/trimmer|manhole/i, 'trim'], [/torsion/i, 'torsion'], [/top steel|top face|support|hogging/i, 'xt'], [/long span|distribution/i, 'yb'],
+      [/short span|bottom face|min\. steel/i, 'xb'], [/punching|live load/i, 'load'], [/dead load|fill/i, 'fill'], [/.*/, 'slab']],
+    drain: [[/cover/i, 'cover'], [/inner face/i, 'inner'], [/horizontal/i, 'horiz'], [/longitudinal/i, 'dist'], [/base.*bottom|wall fixity/i, 'bot'],
+      [/base.*top|soil reaction/i, 'top'], [/soil face|earth pressure|wall moment|tmt grade/i, 'soil'], [/bearing|pcc/i, 'pcc'], [/.*/, 'wall']],
+    road: [[/dowel/i, 'dowel'], [/tie/i, 'tie'], [/mesh|type/i, 'mesh'], [/dlc|sub-base|gsb/i, 'subbase'], [/subgrade|modulus/i, 'subgrade'],
+      [/membrane/i, 'membrane'], [/joint|lanes/i, 'joint'], [/.*/, 'pqc']],
+    floor: [[/top crack/i, 'topmesh'], [/reinforcement|mp \(|mesh|fibre/i, 'mesh'], [/joint|sawn/i, 'joint'], [/rack|mezzanine/i, 'rack'], [/mhe/i, 'mhe'],
+      [/sub-base|membrane/i, 'subbase'], [/subgrade|modulus/i, 'subgrade'], [/.*/, 'slab']],
+  };
+  const hlKey = (kind, label) => { for (const [re, k] of (HL_RULES[kind] || [])) if (re.test(label)) return k; return ''; };
+  const dgState = {};
+  function dgFor(t, d) {
+    const views = RCCDiagrams.views(d);
+    const st = dgState[t] || (dgState[t] = { view: views[0] && views[0].id, ex: true, layers: { rebar: true, dims: true, labels: true }, z: { k: 1, cx: 0.5, cy: 0.5 } });
+    if (!views.some(v => v.id === st.view)) { st.view = views[0].id; st.z = { k: 1, cx: 0.5, cy: 0.5 }; }
+    return { views, st, view: views.find(v => v.id === st.view) };
   }
-  function drawSlab(d) {
-    const W = 640, x0 = 60, x1 = 500, vs = 0.42, wallPx = 34;
-    const fillPx = Math.min(d.fill * 1000 * vs * 0.35, 60);
-    const top = 50 + fillPx, Dpx = d.D * vs, bot = top + Dpx;
-    const hs = (x1 - x0) / (d.span * 1000);
-    const cy = d.cover * vs;
-    let s = `<svg class="draw" viewBox="0 0 ${W} ${bot + 128}" role="img" aria-label="Slab section">`;
-    if (d.fill > 0) s += `<rect class="soil" x="${x0 - wallPx}" y="50" width="${x1 - x0 + 2 * wallPx}" height="${fillPx}"/><text x="${x1 + wallPx + 6}" y="${50 + fillPx / 2 + 4}" class="m">${d.fill} m fill</text>`;
-    s += `<rect class="conc" x="${x0 - wallPx}" y="${top}" width="${x1 - x0 + 2 * wallPx}" height="${Dpx}"/>`;
-    s += `<rect class="wall" x="${x0 - wallPx}" y="${bot}" width="${wallPx}" height="70"/><rect class="wall" x="${x1}" y="${bot}" width="${wallPx}" height="70"/>`;
-    s += `<text x="${(x0 + x1) / 2}" y="${bot + 45}" text-anchor="middle" class="m">water</text>`;
-    const by = bot - cy - d.bottom.dia * vs / 2;
-    s += `<line class="bar-l" x1="${x0 - wallPx + 8}" y1="${by}" x2="${x1 + wallPx - 8}" y2="${by}"/>`;
-    s += dotsAlong(x0 - wallPx + 12, x1 + wallPx - 12, by - 4, 120 * hs * 1.6, 2.4);
-    if (d.top) {
-      const ty = top + cy + d.top.dia * vs / 2;
-      s += `<line class="bar-l" x1="${x0 - wallPx + 8}" y1="${ty}" x2="${x1 + wallPx - 8}" y2="${ty}"/>`;
-      s += dotsAlong(x0 - wallPx + 12, x1 + wallPx - 12, ty + 4, 120 * hs * 1.6, 2.4);
-    }
-    s += `<line class="dim" x1="${x1 + wallPx + 14}" y1="${top}" x2="${x1 + wallPx + 14}" y2="${bot}"/><text x="${x1 + wallPx + 20}" y="${(top + bot) / 2 + 5}" class="b">${d.D} mm</text>`;
-    s += `<line class="dim" x1="${x0}" y1="${bot + 86}" x2="${x1}" y2="${bot + 86}"/><text x="${(x0 + x1) / 2}" y="${bot + 102}" text-anchor="middle" class="m">effective span ${d.span.toFixed(2)} m · cover ${d.cover} mm</text><text x="${(x0 + x1) / 2}" y="${bot + 120}" text-anchor="middle" class="m">bottom ${d.bottom.dia} mm @ ${d.bottom.spacing}${d.top ? ` · top ${d.top.dia} mm @ ${d.top.spacing}` : ''}</text>`;
-    s += `<text x="${x0 - wallPx}" y="30" class="b">${esc(d.label)}</text>`;
-    return s + '</svg>';
+  function diagramHTML(t, r) {
+    const { views, st, view } = dgFor(t, r.drawing);
+    const hide = Object.entries(st.layers).filter(([, on]) => !on).map(([k]) => ' hide-' + k).join('');
+    const chip = (k, label) => `<label class="chip"><input type="checkbox" data-dglayer="${k}"${st.layers[k] ? ' checked' : ''}> ${label}</label>`;
+    const legend = RCCDiagrams.legend(r.drawing).map(l => `<span><svg viewBox="0 0 18 12">${swatch(l.cls)}</svg>${esc(l.label)}</span>`).join('');
+    return `<section class="card" id="dg">
+      <div class="dg-head"><span class="t">Drawings</span><div class="seg">${views.map(v => `<button type="button" data-dgview="${v.id}" class="${v.id === st.view ? 'on' : ''}">${esc(v.label)}</button>`).join('')}</div></div>
+      <div class="dg-tools no-print">${chip('rebar', 'Reinforcement')}${chip('dims', 'Dimensions')}${chip('labels', 'Labels')}
+        ${view.exaggerable ? `<label class="chip"><input type="checkbox" data-dgex${st.ex ? ' checked' : ''}> Exaggerate depth</label>` : '<span class="chip" style="cursor:default;color:var(--muted)">True scale</span>'}
+        <span class="sp"></span><button type="button" class="zbtn" data-dgzoom="out" aria-label="Zoom out">−</button><button type="button" class="zbtn" data-dgzoom="in" aria-label="Zoom in">+</button><button type="button" class="zbtn" data-dgzoom="reset" aria-label="Reset zoom" style="width:auto;padding:0 10px;font-size:.74rem">Fit</button></div>
+      <div class="dg-stage${hide}" id="dg-stage">${RCCDiagrams.render(r.drawing, st.view, { ex: st.ex })}<div class="dg-tip" id="dg-tip"></div></div>
+      <div class="dg-foot"><div class="dg-legend">${legend}</div><span class="no-print">Hover or tap any part for details · drag to pan when zoomed · Ctrl + scroll, pinch or double-click to zoom</span></div>
+    </section>`;
   }
-  function drawDrain(d) {
-    const totW = d.B * 1000 + 2 * d.tw, totH = d.H * 1000 + d.tb + (d.coverD ? d.coverD + 20 : 0);
-    const sc = Math.min(380 / totW, 280 / totH);
-    const W = 600, ox = (W - totW * sc) / 2, gy = 50;
-    const twp = d.tw * sc, tbp = d.tb * sc, Bp = d.B * 1000 * sc, Hp = d.H * 1000 * sc, cp = d.coverD * sc;
-    const topY = gy + (d.coverD ? cp : 0), baseY = topY + Hp;
-    let s = `<svg class="draw" viewBox="0 0 ${W} ${baseY + tbp + 86}" role="img" aria-label="Drain section">`;
-    s += `<rect class="soil" x="10" y="${gy}" width="${ox - 10}" height="${baseY + tbp - gy + 14}"/><rect class="soil" x="${ox + totW * sc}" y="${gy}" width="${W - 10 - ox - totW * sc}" height="${baseY + tbp - gy + 14}"/>`;
-    s += `<rect class="dlc" x="${ox - 8}" y="${baseY + tbp}" width="${totW * sc + 16}" height="12"/>`;
-    s += `<rect class="conc" x="${ox}" y="${topY}" width="${twp}" height="${Hp + tbp}"/><rect class="conc" x="${ox + twp + Bp}" y="${topY}" width="${twp}" height="${Hp + tbp}"/>`;
-    s += `<rect class="conc" x="${ox}" y="${baseY}" width="${totW * sc}" height="${tbp}"/>`;
-    if (d.coverD) s += `<rect class="conc" x="${ox + twp / 2}" y="${gy}" width="${Bp + twp}" height="${cp}" style="fill:#f1f5f9"/>`;
-    const c = d.cover * sc;
-    s += `<line class="bar-l" x1="${ox + c}" y1="${topY + 4}" x2="${ox + c}" y2="${baseY + tbp - c}"/><line class="bar-l" x1="${ox + totW * sc - c}" y1="${topY + 4}" x2="${ox + totW * sc - c}" y2="${baseY + tbp - c}"/>`;
-    s += `<line class="bar-l" x1="${ox + twp - c}" y1="${topY + 4}" x2="${ox + twp - c}" y2="${baseY + c}"/><line class="bar-l" x1="${ox + twp + Bp + c}" y1="${topY + 4}" x2="${ox + twp + Bp + c}" y2="${baseY + c}"/>`;
-    s += `<line class="bar-l" x1="${ox + c}" y1="${baseY + tbp - c}" x2="${ox + totW * sc - c}" y2="${baseY + tbp - c}"/><line class="bar-l" x1="${ox + twp - c}" y1="${baseY + c}" x2="${ox + twp + Bp + c}" y2="${baseY + c}"/>`;
-    s += `<text x="${ox + twp + Bp / 2}" y="${topY + Hp / 2}" text-anchor="middle" class="m">${d.B} × ${d.H} m</text>`;
-    s += `<text x="${ox - 6}" y="${topY + Hp / 2}" text-anchor="end" class="b">wall ${d.tw}</text><text x="${ox + totW * sc / 2}" y="${baseY + tbp + 30}" text-anchor="middle" class="b">base ${d.tb} mm · PCC 75 mm</text>`;
-    if (d.coverD) s += `<text x="${ox + totW * sc + 6}" y="${gy + cp / 2 + 4}" class="b">cover ${d.coverD} mm</text>`;
-    s += `<text x="${W / 2}" y="${baseY + tbp + 52}" text-anchor="middle" class="m">wall: soil face ${d.soil.dia} @ ${d.soil.spacing} · inner face ${d.inner.dia} @ ${d.inner.spacing}</text><text x="${W / 2}" y="${baseY + tbp + 70}" text-anchor="middle" class="m">base: bottom ${d.bot.dia} @ ${d.bot.spacing} · top ${d.top.dia} @ ${d.top.spacing}</text>`;
-    return s + '</svg>';
+  function swatch(cls) {
+    const m = { 'sw-rebar': '<line x1="1" y1="6" x2="17" y2="6" stroke="#dc2626" stroke-width="2.5"/>', 'sw-top': '<line x1="1" y1="6" x2="17" y2="6" stroke="#9333ea" stroke-width="2.5"/>',
+      'sw-tie': '<line x1="1" y1="6" x2="17" y2="6" stroke="#ea580c" stroke-width="2.5"/>', 'sw-load': '<path d="M9 1 V9 M5 6 L9 11 L13 6" stroke="#7c3aed" stroke-width="1.6" fill="none"/>' };
+    if (m[cls]) return m[cls];
+    const fills = { conc: '#e6eaf0', soil: '#dcc9a8', gsb: '#efe6d3', dlc: '#d3dae4', pcc: '#d5dce5', water: 'rgba(8,145,178,.25)', dowel: '#475569', rack: 'rgba(124,58,237,.18)' };
+    return `<rect x="0.5" y="0.5" width="17" height="11" rx="2" fill="${fills[cls] || '#eee'}" stroke="#94a3b8"/>`;
   }
-  function layers(list, x0, x1, y0, vs) {
-    let s = '', y = y0;
-    for (const L of list) {
-      const h = Math.max(L.t * vs, L.min || 0);
-      s += `<rect class="${L.cls}" x="${x0}" y="${y}" width="${x1 - x0}" height="${h}"/><text x="${x1 + 10}" y="${y + h / 2 + 4}" class="${L.bold ? 'b' : 'm'}">${esc(L.label)}</text>`;
-      L.y = y; L.h = h; y += h;
-    }
-    return { svg: s, bottom: y };
+  // zoom / pan
+  function applyZoom() {
+    const st = dgState[state.tab], stage = $('#dg-stage');
+    if (!st || !stage) return;
+    const svg = stage.querySelector('svg'); if (!svg) return;
+    const Wd = +svg.dataset.w, Hd = +svg.dataset.h, z = st.z;
+    z.k = Math.max(1, Math.min(8, z.k));
+    const vw = Wd / z.k, vh = Hd / z.k;
+    const x = Math.max(0, Math.min(Wd - vw, z.cx * Wd - vw / 2)), y = Math.max(0, Math.min(Hd - vh, z.cy * Hd - vh / 2));
+    z.cx = (x + vw / 2) / Wd; z.cy = (y + vh / 2) / Hd;
+    svg.setAttribute('viewBox', `${x.toFixed(2)} ${y.toFixed(2)} ${vw.toFixed(2)} ${vh.toFixed(2)}`);
+    stage.classList.toggle('zoomed', z.k > 1.01);
   }
-  function drawRoad(d) {
-    const x0 = 30, x1 = 430, vs = 0.42;
-    const list = [{ cls: 'conc', t: d.h, label: `PQC ${d.h} mm ${d.grade}`, bold: true }];
-    if (d.dlc) list.push({ cls: 'dlc', t: d.dlc, label: `DLC ${d.dlc} mm` });
-    list.push({ cls: 'gsb', t: d.gsb, label: `GSB ${d.gsb} mm` });
-    list.push({ cls: 'soil', t: 220, label: 'Subgrade, top 500 mm ≥ 97% MDD' });
-    const L = layers(list, x0, x1, 40, vs);
-    const mid = (x0 + x1) / 2, pq = list[0];
-    let s = `<svg class="draw" viewBox="0 0 640 ${L.bottom + 40}" role="img" aria-label="Pavement section">` + L.svg;
-    s += `<line class="joint" x1="${mid}" y1="${pq.y}" x2="${mid}" y2="${pq.y + pq.h * 0.3}"/>`;
-    if (d.dw) s += `<line class="dowel" x1="${mid - d.dw.len * vs / 2}" y1="${pq.y + pq.h / 2}" x2="${mid + d.dw.len * vs / 2}" y2="${pq.y + pq.h / 2}"/><text x="${mid}" y="${pq.y - 8}" text-anchor="middle" class="m">sawn joint + ${d.dw.dia} mm dowel × ${d.dw.len}</text>`;
-    else s += `<text x="${mid}" y="${pq.y - 8}" text-anchor="middle" class="m">sawn joint (aggregate interlock)</text>`;
-    if (d.mesh) s += `<line class="bar-l" x1="${x0 + 6}" y1="${pq.y + pq.h / 3}" x2="${x1 - 6}" y2="${pq.y + pq.h / 3}" style="stroke-dasharray:6 3"/>`;
-    s += `<line class="mem" x1="${x0}" y1="${pq.y + pq.h}" x2="${x1}" y2="${pq.y + pq.h}"/>`;
-    return s + '</svg>';
+  function zoomAt(factor, fx = 0.5, fy = 0.5) {
+    const st = dgState[state.tab], svg = $('#dg-stage svg'); if (!st || !svg) return;
+    const Wd = +svg.dataset.w, Hd = +svg.dataset.h, z = st.z;
+    const vb = svg.viewBox.baseVal;
+    const px = vb.x + fx * vb.width, py = vb.y + fy * vb.height;
+    const k2 = Math.max(1, Math.min(8, z.k * factor));
+    const vw = Wd / k2, vh = Hd / k2;
+    z.k = k2; z.cx = (px - fx * vw + vw / 2) / Wd; z.cy = (py - fy * vh + vh / 2) / Hd;
+    applyZoom();
   }
-  function drawFloor(d) {
-    const x0 = 30, x1 = 400, vs = 0.5;
-    const list = [{ cls: 'conc', t: d.h, label: `Slab ${d.h} mm`, bold: true }];
-    if (d.dlc) list.push({ cls: 'dlc', t: d.dlc, label: `DLC ${d.dlc} mm` });
-    if (d.wmm) list.push({ cls: 'gsb', t: d.wmm, label: `WMM ${d.wmm} mm` });
-    list.push({ cls: 'gsb', t: d.gsb, label: `GSB ${d.gsb} mm` });
-    list.push({ cls: 'soil', t: 160, label: 'Subgrade' });
-    const L = layers(list, x0, x1, 30, vs), sl = list[0];
-    let sec = L.svg;
-    const mid = (x0 + x1) / 2;
-    sec += `<line class="joint" x1="${mid}" y1="${sl.y}" x2="${mid}" y2="${sl.y + sl.h / 4}"/>`;
-    if (d.opt.type !== 'fibre') sec += `<line class="bar-l" x1="${x0 + 6}" y1="${sl.y + sl.h - 40 * vs}" x2="${x1 - 6}" y2="${sl.y + sl.h - 40 * vs}"/>`;
-    if (d.topMesh) sec += `<line class="bar-l" x1="${x0 + 6}" y1="${sl.y + 40 * vs}" x2="${x1 - 6}" y2="${sl.y + 40 * vs}" style="stroke-width:1.2"/>`;
-    if (d.opt.type !== 'mesh') { let f = ''; for (let i = 0; i < 70; i++) { const x = x0 + 8 + ((i * 53) % (x1 - x0 - 16)), y = sl.y + 6 + ((i * 29) % Math.max(sl.h - 12, 4)); f += `<line x1="${x}" y1="${y}" x2="${x + 5}" y2="${y + 2}" stroke="#475569" stroke-width="1"/>`; } sec += f; }
-    sec += `<line class="mem" x1="${x0}" y1="${sl.y + sl.h}" x2="${x1}" y2="${sl.y + sl.h}"/>`;
-    // plan: 36 m × 24 m bay
-    const PW = 36, PH = 24, ps = Math.min(520 / PW, 230 / PH), px = 40, py = L.bottom + 40;
-    let plan = `<text x="${px}" y="${py - 10}" class="b">Plan — typical 36 × 24 m bay</text>`;
-    if (d.post) {
-      const depth = 1.1, b2b = 0.3, pair = 2 * depth + b2b, aisle = Math.max(d.aisle, 1.5);
-      for (let y = 0.6; y + pair <= PH - 0.4; y += pair + aisle) {
-        plan += `<rect class="rack" x="${px + 1.5 * ps}" y="${py + y * ps}" width="${(PW - 3) * ps}" height="${depth * ps}"/><rect class="rack" x="${px + 1.5 * ps}" y="${py + (y + depth + b2b) * ps}" width="${(PW - 3) * ps}" height="${depth * ps}"/>`;
-      }
-    } else {
-      for (let gx = 1.5; gx + 4 <= PW - 1; gx += 5.5) for (let gy = 1.5; gy + 3 <= PH - 1; gy += 5) plan += `<rect class="stack" x="${px + gx * ps}" y="${py + gy * ps}" width="${4 * ps}" height="${3 * ps}"/>`;
-    }
-    for (let x = d.S; x < PW - 0.01; x += d.S) plan += `<line class="grid-l" x1="${px + x * ps}" y1="${py}" x2="${px + x * ps}" y2="${py + PH * ps}"/>`;
-    for (let y = d.S; y < PH - 0.01; y += d.S) plan += `<line class="grid-l" x1="${px}" y1="${py + y * ps}" x2="${px + PW * ps}" y2="${py + y * ps}"/>`;
-    plan += `<rect x="${px}" y="${py}" width="${PW * ps}" height="${PH * ps}" fill="none" class="arm"/>`;
-    plan += `<text x="${px}" y="${py + PH * ps + 20}" class="m">dashed: sawn joints @ ${d.S} m · solid: armoured joints</text><text x="${px}" y="${py + PH * ps + 38}" class="m">${d.post ? 'violet: back-to-back racking' : 'grey: block stacks'}</text>`;
-    const H = py + PH * ps + 48;
-    return `<svg class="draw" viewBox="0 0 600 ${H}" role="img" aria-label="Floor section and plan">${sec}${plan}</svg>`;
+  function updateDiagram() {
+    const r = results[state.tab]; const card = $('#dg');
+    if (!r || !r.ok || !card) return;
+    card.outerHTML = diagramHTML(state.tab, r);
+    applyZoom();
   }
-  const DRAW = { slab: drawSlab, drain: drawDrain, road: drawRoad, floor: drawFloor };
+  // highlight linking
+  let hlCur = '';
+  function setHL(key) {
+    if (key === hlCur) return;
+    document.querySelectorAll('#results .hl').forEach(el => el.classList.remove('hl'));
+    hlCur = key;
+    if (key) document.querySelectorAll(`#results [data-hl="${key}"]`).forEach(el => el.classList.add('hl'));
+  }
+  // tooltip
+  function showTip(target, cx, cy) {
+    const tip = $('#dg-tip'), stage = $('#dg-stage');
+    if (!tip || !stage) return;
+    if (!target) { tip.classList.remove('show'); return; }
+    tip.textContent = target.getAttribute('data-tip');
+    const b = stage.getBoundingClientRect();
+    let x = cx - b.left + 14, y = cy - b.top + 14;
+    tip.classList.add('show');
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    if (x + tw > b.width - 4) x = Math.max(4, cx - b.left - tw - 14);
+    if (y + th > b.height - 4) y = Math.max(4, cy - b.top - th - 14);
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
 
   // ───────────── results ─────────────
   function renderResults() {
@@ -541,12 +585,14 @@
       return;
     }
     const failing = r.checks.filter(c => !c.pass).length;
-    const tiles = r.summary.map(x => `<div class="tile${x.money ? ' money' : ''}"><div class="k">${esc(x.label)}</div><div class="v">${x.money ? inr(x.value) : esc(x.value)}</div></div>`).join('');
+    const K = r.kind;
+    const hlA = label => { const k = hlKey(K, label); return k ? ` data-hl="${k}"` : ''; };
+    const tiles = r.summary.map(x => `<div class="tile${x.money ? ' money' : ''}"${x.money ? '' : hlA(x.label + ' ' + x.value)}><div class="k">${esc(x.label)}</div><div class="v">${x.money ? inr(x.value) : esc(x.value)}</div></div>`).join('');
     const warn = (r.warnings || []).map(w => `<div class="callout callout-amber">${esc(w)}</div>`).join('');
-    const spec = r.sections.map(sec => `<h4>${esc(sec.title)}</h4><table class="tbl spec"><tbody>${sec.rows.map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}</tbody></table>`).join('');
+    const spec = r.sections.map(sec => `<div><h4>${esc(sec.title)}</h4><table class="tbl spec"><tbody>${sec.rows.map(([k, v]) => `<tr${hlA(k)}><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}</tbody></table></div>`).join('');
     const checks = r.checks.map(c => {
       const u = Math.min(c.util, 1.5), cls = c.util > 1 ? 'over' : c.util > 0.9 ? 'hi' : '';
-      return `<tr><td>${esc(c.name)}</td><td class="num">${fmtNum(c.demand)}</td><td class="num">${fmtNum(c.capacity)}</td><td class="muted">${esc(c.unit)}</td>
+      return `<tr${hlA(c.name)}><td>${esc(c.name)}</td><td class="num">${fmtNum(c.demand)}</td><td class="num">${fmtNum(c.capacity)}</td><td class="muted">${esc(c.unit)}</td>
         <td><div class="bar"><i class="${cls}" style="width:${(u / 1.5 * 100).toFixed(0)}%"></i></div><span style="font-size:.7rem;color:var(--muted)">${(c.util * 100).toFixed(0)}%</span></td>
         <td>${c.pass ? '<span class="pill pill-green">PASS</span>' : '<span class="pill pill-red">FAIL</span>'}</td><td class="muted">${esc(c.ref)}</td></tr>`;
     }).join('');
@@ -558,10 +604,8 @@
       <section class="card"><div class="card-title">Recommended design — ${esc(TABS[t].label)}
         <span class="pill ${failing ? 'pill-red' : 'pill-green'}">${failing ? failing + ' CHECK(S) FAIL' : 'ALL ' + r.checks.length + ' CHECKS PASS'}</span></div>
         <div class="tiles">${tiles}</div>${warn}</section>
-      <div class="two">
-        <section class="card"><div class="card-title">Section</div>${DRAW[r.drawing.type](r.drawing)}</section>
-        <section class="card"><div class="card-title">Specification</div>${spec}</section>
-      </div>
+      ${diagramHTML(t, r)}
+      <section class="card"><div class="card-title">Specification</div><div class="spec-grid">${spec}</div></section>
       <section class="card"><div class="card-title">Code checks</div><div class="tbl-wrap"><table class="tbl">
         <thead><tr><th>Check</th><th class="num">Demand</th><th class="num">Capacity</th><th>Unit</th><th>Utilisation</th><th>Status</th><th>Reference</th></tr></thead>
         <tbody>${checks}</tbody></table></div></section>
@@ -572,6 +616,8 @@
         <tbody>${boq}</tbody><tfoot><tr><td colspan="4">Total (excl. GST)</td><td class="num">${inr(r.boq.total)}</td></tr></tfoot></table></div></section>
       <section class="card"><div class="card-title">Assumptions & notes</div><ul class="notes">${r.notes.map(n => `<li>${esc(n)}</li>`).join('')}
         <li>Rates are generic placeholders — edit them in the sidebar to match your schedule of rates (CPWD DSR / state SOR).</li></ul></section>`;
+    hlCur = '';
+    applyZoom();
   }
   function fmtNum(n) { return Math.abs(n) >= 100 ? Math.round(n).toLocaleString('en-IN') : (+n).toFixed(Math.abs(n) < 1 ? 3 : 2); }
 
@@ -650,6 +696,86 @@
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob); a.download = `rcc-boq-${state.tab}.csv`; a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+
+  const res = $('#results');
+  res.addEventListener('click', e => {
+    const v = e.target.closest('[data-dgview]');
+    if (v) { const st = dgState[state.tab]; st.view = v.dataset.dgview; st.z = { k: 1, cx: 0.5, cy: 0.5 }; updateDiagram(); return; }
+    const z = e.target.closest('[data-dgzoom]');
+    if (z) { const st = dgState[state.tab]; if (z.dataset.dgzoom === 'reset') { st.z = { k: 1, cx: 0.5, cy: 0.5 }; applyZoom(); } else zoomAt(z.dataset.dgzoom === 'in' ? 1.5 : 1 / 1.5); return; }
+    const row = e.target.closest('tr[data-hl], .tile[data-hl]');
+    if (row && $('#dg')) {
+      const key = row.dataset.hl; setHL(key);
+      const target = document.querySelector(`#dg-stage [data-hl="${key}"]`);
+      if (!target) {
+        const st = dgState[state.tab], d = results[state.tab].drawing;
+        const alt = RCCDiagrams.views(d).find(vw => RCCDiagrams.render(d, vw.id, { ex: st.ex }).includes(`data-hl="${key}"`));
+        if (alt) { st.view = alt.id; st.z = { k: 1, cx: 0.5, cy: 0.5 }; updateDiagram(); hlCur = ''; setHL(key); }
+      }
+      $('#dg').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  });
+  res.addEventListener('change', e => {
+    const st = dgState[state.tab]; if (!st) return;
+    if (e.target.matches('[data-dglayer]')) { st.layers[e.target.dataset.dglayer] = e.target.checked; $('#dg-stage').classList.toggle('hide-' + e.target.dataset.dglayer, !e.target.checked); }
+    if (e.target.matches('[data-dgex]')) { st.ex = e.target.checked; updateDiagram(); }
+  });
+  res.addEventListener('pointermove', e => {
+    if (drag) return;
+    const inStage = e.target.closest('#dg-stage');
+    const tipEl = inStage ? e.target.closest('[data-tip]') : null;
+    showTip(tipEl, e.clientX, e.clientY);
+    const h = e.target.closest('[data-hl]');
+    setHL(h ? h.dataset.hl : '');
+  });
+  res.addEventListener('pointerleave', () => { setHL(''); showTip(null); });
+  // pan & pinch
+  let drag = null; const ptrs = new Map();
+  res.addEventListener('pointerdown', e => {
+    const stage = e.target.closest('#dg-stage'); if (!stage) return;
+    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const st = dgState[state.tab];
+    if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; drag = { pinch: Math.hypot(a.x - b.x, a.y - b.y), k: st.z.k }; return; }
+    drag = { x: e.clientX, y: e.clientY, cx: st.z.cx, cy: st.z.cy, moved: false, type: e.pointerType, target: e.target };
+  });
+  window.addEventListener('pointermove', e => {
+    if (!drag || !ptrs.has(e.pointerId)) return;
+    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const st = dgState[state.tab], svg = $('#dg-stage svg'); if (!st || !svg) return;
+    if (drag.pinch && ptrs.size === 2) {
+      const [a, b] = [...ptrs.values()]; const dist = Math.hypot(a.x - b.x, a.y - b.y);
+      st.z.k = drag.k * dist / drag.pinch; applyZoom(); e.preventDefault(); return;
+    }
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (Math.abs(dx) + Math.abs(dy) > 4) drag.moved = true;
+    if (st.z.k > 1.01 && drag.moved) {
+      const r = svg.getBoundingClientRect();
+      st.z.cx = drag.cx - dx / r.width / st.z.k; st.z.cy = drag.cy - dy / r.height / st.z.k;
+      $('#dg-stage').classList.add('dragging'); showTip(null); applyZoom();
+    }
+  });
+  const endPtr = e => {
+    if (!ptrs.has(e.pointerId)) return;
+    ptrs.delete(e.pointerId);
+    if (drag && !drag.moved && !drag.pinch && drag.type !== 'mouse') {
+      const t = drag.target.closest && drag.target.closest('[data-tip]');
+      showTip(t, e.clientX, e.clientY); const h = drag.target.closest && drag.target.closest('[data-hl]'); setHL(h ? h.dataset.hl : '');
+    }
+    if (ptrs.size === 0) { drag = null; const s = $('#dg-stage'); if (s) s.classList.remove('dragging'); }
+  };
+  window.addEventListener('pointerup', endPtr);
+  window.addEventListener('pointercancel', endPtr);
+  res.addEventListener('wheel', e => {
+    const stage = e.target.closest('#dg-stage'); if (!stage || !e.ctrlKey) return;
+    e.preventDefault();
+    const r = stage.querySelector('svg').getBoundingClientRect();
+    zoomAt(e.deltaY < 0 ? 1.15 : 1 / 1.15, (e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
+  }, { passive: false });
+  res.addEventListener('dblclick', e => {
+    const stage = e.target.closest('#dg-stage'); if (!stage) return;
+    const r = stage.querySelector('svg').getBoundingClientRect();
+    zoomAt(e.shiftKey ? 1 / 1.6 : 1.6, (e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
   });
 
   load();
