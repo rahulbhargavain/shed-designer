@@ -487,7 +487,9 @@
       cov = covFeas[0];
     }
     const covW = cov ? 25 * cov.D / 1000 * (inp.B + 0.3) : 0;
-    const wheelR = inp.covered && inp.P > 0 ? inp.P * inp.impact / Math.max(1, inp.unitWidth) : 0;
+    // wheel on the cover spreads at 45 deg down the continuous walls: unit width + 2 x wall height along the drain
+    const wheelSpread = Math.max(1, inp.unitWidth + 2 * inp.H);
+    const wheelR = inp.covered && inp.P > 0 ? inp.P * inp.impact / wheelSpread : 0;
 
     const Hw = inp.H + 0.075;
     const Ms_soil = K0 * inp.gamma * Hw ** 3 / 6 + K0 * surch * Hw ** 2 / 2;
@@ -610,6 +612,7 @@
       },
       notes: [
         'Walls designed as cantilevers from the base (cover slab assumed not to prop the walls).',
+        'Wheel load on the cover spreads at 45 deg down the walls (unit width + 2 x depth along the drain) for base and bearing checks.',
         'Inner face designed for drain running full with no backfill (construction / test condition).',
         'Hydraulic sizing is not part of this tool — enter the required internal size.',
       ],
