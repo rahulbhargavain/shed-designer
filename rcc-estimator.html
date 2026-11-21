@@ -338,6 +338,7 @@
         { title: 'Cover slab', fields: [
           C('covered', 'Covered drain (precast slabs)', true, { wide: true }),
           N('unitWidth', 'Cover unit width', 0.6, { unit: 'm', step: 0.05, show: v => v.covered }),
+          N('cvMin', 'Cover at least (0 = lightest)', 0, { unit: 'mm', step: 10, show: v => v.covered }),
           ...slabLoadFields('truck', v => v.covered),
         ] },
       ],

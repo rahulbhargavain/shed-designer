@@ -480,7 +480,7 @@
       const r = optimiseSlab({
         lx: inp.B, ly: inp.unitWidth, support: 150, edge: 'ss', extraDL: 0, q: inp.q,
         wheel: { P: inp.P, a: inp.a, b: inp.b, s: inp.s, impact: inp.impact },
-        fill: 0, waterRetaining: false, oneWay: true, widthPerp: inp.unitWidth, Dmin: 100, Dmax: 350,
+        fill: 0, waterRetaining: false, oneWay: true, widthPerp: inp.unitWidth, Dmin: Math.max(100, inp.cvMin || 0), Dmax: 350,
       }, s);
       covFeas = r.feasible;
       if (!covFeas.length) return failResult('drain', 'Cover slab: no section up to 350 mm passes — ' + (r.lastFail ? r.lastFail.reason : ''));

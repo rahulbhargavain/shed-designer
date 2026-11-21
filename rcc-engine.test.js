@@ -210,7 +210,7 @@ test('Road: hilly region (Bhimtal) defaults to ΔT 18 °C; ΔT override drives c
   assert.ok(hot.boq.total >= site18.boq.total);
 });
 
-test('Minimum thickness options: road hMin and drain tbMin / twMin / toe are honoured', () => {
+test('Minimum thickness options: road hMin and drain tbMin / twMin / toe / cvMin are honoured', () => {
   const road = RCC.designRoad({ ...roadBase, ...rp('campus'), hMin: 280 }, settings);
   assert.ok(road.ok && road.drawing.h >= 280);
   const base = { B: 0.45, H: 0.6, length: 10, gamma: 18, phi: 30, sbc: 100, surcharge: 'vehicle', covered: true, ...slab('fire'), unitWidth: 0.6, waterRetaining: false };
@@ -220,4 +220,8 @@ test('Minimum thickness options: road hMin and drain tbMin / twMin / toe are hon
   assert.ok(d1.drawing.tb >= 175 && d1.drawing.tw >= 175 && d1.drawing.toe === 100);
   const bear = r => r.checks.find(c => /Bearing/.test(c.name)).util;
   assert.ok(bear(d1) < bear(d0));
+  const d2 = RCC.designDrain({ ...base, cvMin: 260 }, settings);
+  assert.ok(d2.ok && d2.drawing.coverD >= 260);
+  const cvShear = r => r.checks.find(c => /Cover slab — One-way shear/.test(c.name)).util;
+  assert.ok(cvShear(d2) < cvShear(d0));
 });
