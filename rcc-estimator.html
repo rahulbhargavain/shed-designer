@@ -315,6 +315,7 @@
           N('length', 'Road length', 500, { unit: 'm', step: 10 }),
           N('jointSpacing', 'JPCP joint spacing', 4.5, { unit: 'm', step: 0.25 }),
           N('jrcpSpacing', 'JRCP joint spacing', 12, { unit: 'm', step: 0.5 }),
+          N('hMin', 'Adopt slab at least (0 = lightest passing)', 0, { unit: 'mm', step: 10 }),
         ] },
       ],
     },
@@ -329,6 +330,9 @@
           N('phi', 'Soil friction angle φ', 30, { unit: '°' }),
           N('sbc', 'Safe bearing capacity', 100, { unit: 'kPa', step: 10 }),
           S('surcharge', 'Surcharge beside drain', 'vehicle', opts(RCC.SURCHARGE), { wide: true }),
+          N('twMin', 'Wall at least (0 = lightest)', 0, { unit: 'mm', step: 25 }),
+          N('tbMin', 'Base at least (0 = lightest)', 0, { unit: 'mm', step: 25 }),
+          N('toe', 'Base toe beyond each wall (widens bearing)', 0, { unit: 'mm', step: 25 }),
           C('waterRetaining', 'Sewage / effluent — apply IS 3370', false, { wide: true }),
         ] },
         { title: 'Cover slab', fields: [

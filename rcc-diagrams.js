@@ -371,11 +371,12 @@
     const sW = totalW * sc;
     let s = text(ML, 22, 'Cross-section · true scale', { cls: 'ttl' });
     s += rect(ML, yTop, sW, yP - yTop + 180 * sc, { cls: 'soil', tip: `Backfill: γ = ${d.gamma} kN/m³, K₀ = ${d.K0.toFixed(3)}`, hl: 'soil' });
-    s += rect(x0 - 75 * sc, yBb, x1 - x0 + 150 * sc, 75 * sc, { cls: 'pcc', tip: `PCC M10 levelling bed 75 mm\nBearing pressure ${d.qGross.toFixed(1)} kPa ≤ SBC ${d.sbc} kPa`, hl: 'pcc' });
+    s += rect(x0 - 75 * sc - (d.toe || 0) * sc, yBb, x1 - x0 + 150 * sc + 2 * (d.toe || 0) * sc, 75 * sc, { cls: 'pcc', tip: `PCC M10 levelling bed 75 mm\nBearing pressure ${d.qGross.toFixed(1)} kPa ≤ SBC ${d.sbc} kPa`, hl: 'pcc' });
     const wtip = `RCC ${d.grade} wall ${d.tw} mm · cantilever from base\nService moment at base ${d.MsSoil.toFixed(2)} kNm/m (earth + surcharge)`;
     s += rect(x0, yTop, d.tw * sc, d.H * 1000 * sc, { cls: 'conc-flat', tip: wtip, hl: 'wall' });
     s += rect(xi1, yTop, d.tw * sc, d.H * 1000 * sc, { cls: 'conc-flat', tip: wtip, hl: 'wall' });
-    s += rect(x0, yBt, x1 - x0, d.tb * sc, { cls: 'conc-flat', tip: `RCC ${d.grade} base slab ${d.tb} mm`, hl: 'bot' });
+    const toe = (d.toe || 0) * sc;
+    s += rect(x0 - toe, yBt, x1 - x0 + 2 * toe, d.tb * sc, { cls: 'conc-flat', tip: `RCC ${d.grade} base slab ${d.tb} mm${d.toe ? `, toe ${d.toe} mm each side` : ''}`, hl: 'bot' });
     s += path(P([[x0, yTop], [x0, yBb], [x1, yBb], [x1, yTop], [xi1, yTop], [xi1, yBt], [xi0, yBt], [xi0, yTop]]) + ' Z', { cls: 'outline' });
     s += rect(xi0, yTop, xi1 - xi0, d.H * 1000 * sc, { cls: 'void' });
     const wl = yBt - d.H * 1000 * sc * 0.75;

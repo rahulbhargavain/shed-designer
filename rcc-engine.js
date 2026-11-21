@@ -502,7 +502,7 @@
     let lastReason = '';
     for (const g of grades) {
       const fck = fckOf(g);
-      for (const tw of range(150, 300, 25)) {
+      for (const tw of range(Math.max(150, inp.twMin || 0), 300, 25)) {
         const base = { D: tw, fck, fy, cover, crackLimit };
         const soil = chooseBars({ ...base, Mu: 1.5 * Ms_soil * 1e6, Ms: Ms_soil * 1e6, dEff: f => tw - cover - f / 2, astMin: faceMinPct * 1000 * tw, maxSpacing: d => Math.min(3 * d, 300) });
         const inner = chooseBars({ ...base, Mu: 1.5 * Ms_w * 1e6, Ms: Ms_w * 1e6, dEff: f => tw - cover - f / 2, astMin: faceMinPct * 1000 * tw, maxSpacing: d => Math.min(3 * d, 300) });
@@ -517,8 +517,9 @@
         if (soil.crack != null) wallChecks.push(check('Wall crack width — soil face', soil.crack, crackLimit, 'mm', WR ? 'IS 3370-2' : 'IS 456 Cl 35.3.2'));
         if (!wallChecks.every(c => c.pass)) { lastReason = 'wall shear/crack'; continue; }
 
-        for (const tb of range(150, 300, 25)) {
-          const span = inp.B + tw / 1000, outer = inp.B + 2 * tw / 1000;
+        for (const tb of range(Math.max(150, inp.tbMin || 0), 300, 25)) {
+          const toe = (inp.toe || 0) / 1000;   // optional base projection beyond each wall
+          const span = inp.B + tw / 1000, outer = inp.B + 2 * tw / 1000, baseW = outer + 2 * toe;
           const wallW = 25 * tw / 1000 * inp.H;
           const pNet = (2 * wallW + covW + wheelR) / outer;
           const MsTop = Math.max(pNet * span ** 2 / 8, Ms_w);
@@ -529,7 +530,7 @@
           const dist = chooseBars({ ...bb, cover, Mu: 0, Ms: 0, dEff: f => tb - cover - f / 2, astMin: horizPct / 2 * 1000 * tb, crackLimit: 0 });
           const Vb = 1.5 * pNet * span / 2;
           const tcB = slabShearK(tb) * tauC(100 * topb.ast / (1000 * topb.d), fck);
-          const qGross = (2 * wallW + 25 * tb / 1000 * outer + covW + wheelR + 9.81 * inp.B * inp.H) / outer;
+          const qGross = (2 * wallW + 25 * tb / 1000 * baseW + covW + wheelR + 9.81 * inp.B * inp.H + (toe > 0 ? 2 * toe * inp.H * inp.gamma : 0)) / baseW;
           const checks = [
             ...wallChecks,
             check('Base flexure — bottom (wall fixity)', 1.5 * Ms_soil, bot.MuR / 1e6, 'kNm/m', 'IS 456 Cl 38.1'),
@@ -538,14 +539,14 @@
             check('Bearing pressure (drain full)', qGross, inp.sbc, 'kPa', 'IS 6403'),
           ];
           if (!checks.every(c => c.pass)) { lastReason = checks.find(c => !c.pass).name; continue; }
-          const concM = 2 * tw / 1000 * inp.H + tb / 1000 * outer;
-          const steelM = (2 * inp.H * kgPerM2(soil.ast + inner.ast + 2 * horiz.ast) + outer * kgPerM2(bot.ast + topb.ast + 2 * dist.ast)) * lap;
+          const concM = 2 * tw / 1000 * inp.H + tb / 1000 * baseW;
+          const steelM = (2 * inp.H * kgPerM2(soil.ast + inner.ast + 2 * horiz.ast) + baseW * kgPerM2(bot.ast + topb.ast + 2 * dist.ast)) * lap;
           const formM = 4 * inp.H;
-          const pccM = (outer + 0.15) * 0.075;
-          const excM = (outer + 0.6) * (inp.H + tb / 1000 + 0.075);
+          const pccM = (baseW + 0.15) * 0.075;
+          const excM = (baseW + 0.6) * (inp.H + tb / 1000 + 0.075);
           const covCostM = cov ? cov.costM2 * (inp.B + 0.3) : 0;
           const costM = concM * R[g] + steelM * R.steel + formM * R.formwork + pccM * R.pcc + excM * R.excavation + covCostM;
-          all.push({ grade: g, tw, tb, soil, inner, horiz, bot, topb, dist, checks, concM, steelM, formM, pccM, excM, costM, qGross });
+          all.push({ toe: toe * 1000, grade: g, tw, tb, soil, inner, horiz, bot, topb, dist, checks, concM, steelM, formM, pccM, excM, costM, qGross });
           break; // thinnest base that works for this wall is cheapest
         }
       }
@@ -583,7 +584,7 @@
           ['Internal size', `${inp.B} m wide × ${inp.H} m deep, ${L} m long`],
           ['Earth pressure', `K₀ = ${round(K0, 3)}, γ = ${inp.gamma} kN/m³, surcharge ${round(surch, 1)} kPa`],
           ['Wall moment at base (service)', `${round(Ms_soil, 2)} kNm/m (soil) / ${round(Ms_w, 2)} kNm/m (water)`],
-          ['Bearing pressure', `${round(b.qGross, 1)} kPa vs SBC ${inp.sbc} kPa`],
+          ['Bearing pressure', `${round(b.qGross, 1)} kPa vs SBC ${inp.sbc} kPa${b.toe ? ` (base toe ${b.toe} mm each side)` : ''}`],
           ['Cover', `${cover} mm (walls, base top), ${coverBase} mm (base bottom)`],
           ['Rules', WR ? 'IS 3370-2 (sewage/effluent): crack ≤ 0.2 mm, 0.24% min steel' : 'IS 456: crack ≤ 0.3 mm'],
         ] },
@@ -604,7 +605,7 @@
         label: `${r.grade}: wall ${r.tw} / base ${r.tb} mm`, detail: `soil face ${barStr(r.soil)}`, cost: Math.round(r.costM * L), best: r === b,
       })),
       drawing: {
-        type: 'drain', B: inp.B, H: inp.H, tw: b.tw, tb: b.tb, cover, coverBase, grade: b.grade, coverD: cov ? cov.D : 0,
+        type: 'drain', B: inp.B, H: inp.H, tw: b.tw, tb: b.tb, toe: b.toe || 0, cover, coverBase, grade: b.grade, coverD: cov ? cov.D : 0,
         soil: b.soil, inner: b.inner, horiz: b.horiz, bot: b.bot, top: b.topb, dist: b.dist,
         cov: cov ? { D: cov.D, grade: cov.grade, cover: cov.cover, xb: cov.xb, yb: cov.yb, Lx: cov.Lx } : null,
         unitWidth: inp.unitWidth, K0, gamma: inp.gamma, surch, Hw, MsSoil: Ms_soil, MsW: Ms_w, qGross: b.qGross, sbc: inp.sbc,
@@ -733,7 +734,7 @@
       for (const g of grades) {
         const fck = fckOf(g);
         let found = null;
-        for (const h of range(150, 400, 10)) {
+        for (const h of range(Math.max(150, inp.hMin || 0), 400, 10)) {
           const r = evalRoad(h, fck, k);
           if (r.ok) { found = { h, ...r }; break; }
         }
